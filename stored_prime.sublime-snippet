@@ -1,0 +1,26 @@
+<snippet>
+  <content><![CDATA[
+//make sure to use arr.set()
+const int N = int(1e7);
+bitset<N>arr;
+vector<int>stored_prime;
+void sieve() {
+    arr[0] = arr[1] = false;
+    for (int i = 3; i * i <= N; i += 2) 
+        if (arr[i]) 
+            for (int j = i * i; j < N; j += i + i) 
+                arr[j]  = false;
+
+
+    stored_prime.emplace_back(2);
+    for (int i = 3; i < N; i += 2)
+        if (arr[i])
+            stored_prime.emplace_back(i);
+
+}
+]]></content>
+  <tabTrigger>stored_prime</tabTrigger>
+  <description>o(n)(1e7)</description>
+  <!-- Optional: Set a scope to limit where the snippet will trigger -->
+   <!-- <scope >source.c++</scope > -->
+  </snippet>

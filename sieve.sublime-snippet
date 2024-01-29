@@ -1,0 +1,24 @@
+<snippet>
+	<content><![CDATA[
+//make all bit to set()
+const int N = int(1e7);
+bitset<N>arr;
+void sieve() {
+	arr[0] = arr[1] = false;
+	for (int i = 3; i * i <= N; i += 2) {
+		if (arr[i]) {
+			for (int j = i * i; j < N; j += i + i) {
+				arr[j]  = false;
+			}
+		}
+	}
+}
+bool is_p(int n) {
+	return (n & 1 || n == 2) && arr[n];
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>sieve</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

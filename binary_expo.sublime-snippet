@@ -1,0 +1,19 @@
+<snippet>
+  <content><![CDATA[
+int p(int a, int b) {
+    int ans = 1 % M;
+    while (b) {
+        if (b & 1) {
+            ans = 1LL * ans * a % M;
+        }
+        a = 1LL * a * a % M;
+        b >>= 1;
+    }
+    return ans;
+}
+]]></content>
+  <tabTrigger>binary_expo</tabTrigger>
+  <description>binary_expo</description>
+  <!-- Optional: Set a scope to limit where the snippet will trigger -->
+   <scope >source.c++</scope > 
+</snippet>

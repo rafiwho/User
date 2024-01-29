@@ -1,0 +1,17 @@
+<snippet>
+  <content><![CDATA[
+bool is_subseq(const string &sub, const string &str) {
+    size_t index = 0;
+
+    for (char ch : str)
+        if (index < sub.size() && ch == sub[index])
+            index++;
+
+    return index == sub.size();
+}
+]]></content>
+  <tabTrigger>issubseq</tabTrigger>
+  <description>subsequence</description>
+  <!-- Optional: Set a scope to limit where the snippet will trigger -->
+  <!-- <scope >source.c++</scope > -->
+</snippet>

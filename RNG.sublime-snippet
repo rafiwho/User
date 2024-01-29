@@ -1,0 +1,9 @@
+<snippet>
+	<content><![CDATA[
+mt19937 rng(chrono::high_resolution_clock::now().time_since_epoch().count());
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>random_number_genarator</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

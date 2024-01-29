@@ -1,0 +1,22 @@
+<snippet>
+	<content><![CDATA[
+int64_t ith_num_in_a_seq(int64_t i){
+    int64_t ans = 0;
+    int64_t a = 1;
+    int64_t digit[] = {0, 1, 2, 3, 5, 6, 7, 8, 9};
+    while (i){
+        //ith % total digit
+        ans += digit[i % 9] * a;
+        i /= 9;
+        //mult by 10 everytime
+        a *= 10;
+        //i divide number of digit
+    }
+    return ans;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>ithNumFromAnySeq</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

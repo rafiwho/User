@@ -1,0 +1,30 @@
+<snippet>
+	<content><![CDATA[
+template<typename T, typename T_iterable>
+vector<pair<T, int>> run_length_encoding(const T_iterable &items) {
+	vector<pair<T, int>> runs;
+	T previous;
+	int count = 0;
+
+	for (const T &item : items)
+		if (item == previous) {
+			count++;
+		} else {
+			if (count > 0)
+				runs.emplace_back(previous, count);
+
+			previous = item;
+			count = 1;
+		}
+
+	if (count > 0)
+		runs.emplace_back(previous, count);
+
+	return runs;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>length_encoading</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

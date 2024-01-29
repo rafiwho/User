@@ -1,0 +1,29 @@
+<snippet>
+	<content><![CDATA[
+template <typename T>
+vector<T> nthPermutation(vector<T>&v, int k) {
+	vector<T>nums(v.begin(), v.end());
+	int n = nums.size();
+	vector<T> result;
+
+	int64_t fact = 1;
+	for (int i = 1; i <= n; ++i) {
+		fact *= i;
+	}
+
+	for (int i = 0; i < n; ++i) {
+		fact /= (n - i);
+		int idx = (k - 1) / fact;
+		result.push_back(nums[idx]);
+		nums.erase(nums.begin() + idx);
+		k -= idx * fact;
+	}
+
+	return result;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>nthper</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

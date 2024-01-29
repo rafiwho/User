@@ -1,0 +1,15 @@
+<snippet>
+	<content><![CDATA[
+template<typename T>
+void output_vector(const vector<T> &v, bool add_one = false) {
+	int start = 0 , end = int(v.size());
+
+	for (int i = start; i < end; i++)
+		cout << v[i] + (add_one ? 1 : 0) << " \n"[i == end - 1];
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>outputvector</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

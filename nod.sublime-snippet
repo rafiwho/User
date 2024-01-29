@@ -1,0 +1,26 @@
+<snippet>
+	<content><![CDATA[
+int NOD(int n) {
+
+	int nod = 1;
+	int nn = n;
+	for (int i = 2; i * i <= nn; ++i) {
+		int e = 0;
+		while (nn % i == 0) {
+			e++;
+			nn /= i;
+		}
+		nod *= (e + 1);
+	}
+
+	if (nn > 1)
+		nod *= 2;
+
+	return nod;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>nod</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

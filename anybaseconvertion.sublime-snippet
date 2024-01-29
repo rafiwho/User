@@ -1,0 +1,21 @@
+<snippet>
+	<content><![CDATA[
+int64_t any_to_anybase( int64_t num , int64_t baseA , int64_t baseB){
+	int64_t ans = 0;
+	int64_t dec =  stoll(to_string(num), nullptr , baseA);
+	int64_t rem = 0;
+	int64_t i = 1;
+	while (dec){
+		rem = dec % baseB;
+		dec /= baseB;
+		ans += rem * i;
+		i*=10;
+	}
+	return ans;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>anybase_to_anybase</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
