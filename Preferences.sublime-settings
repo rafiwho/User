@@ -2,19 +2,15 @@
 	"color_scheme": "Monokai.sublime-color-scheme",
 	"remember_open_files": true,
 	"word_wrap": true,
-	"show_rel_path": true,
 	"remember_layout": true,
 	"ignored_packages":
 	[
 		"Vintage",
 	],
 	"update_check": false,
-	/*"font_size": 11,*/
 	"save_on_focus_lost": true,
 
 	"index_files": true,
-	/*"font_size": 30,*/
-	/*"font_size": 10,*/
 	"theme": "auto",
-	"font_size": 10,
+	"font_size": 12,
 }

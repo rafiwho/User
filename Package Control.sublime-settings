@@ -1,11 +1,7 @@
 {
 	"bootstrapped": true,
-	"in_process_packages":
-	[
-	],
 	"installed_packages":
 	[
-		"Package Control",
-		"PackageResourceViewer",
+		"Package Control"
 	],
 }
