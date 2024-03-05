@@ -1,0 +1,33 @@
+<snippet>
+	<content><![CDATA[
+struct DS {
+  set<int> missing_numbers;
+  map<int, int> mp;
+
+  DS() {
+    for (int i = 0; i <= n; i++) {
+      missing_numbers.insert(i);
+    }
+  };
+  void insert(int x) {
+    mp[x]++;
+    if (mp[x] == 1)
+      missing_numbers.erase(x);
+  }
+
+  void remove(int x) {
+    mp[x]--;
+    if (mp[x] == 0) {
+      missing_numbers.insert(x);
+    }
+  }
+  int getMex() {
+    return *missing_numbers.begin();
+  }
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>MEX</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
