@@ -1,12 +1,17 @@
 <snippet>
 	<content><![CDATA[
-constexpr static int base1 = 121, base2 = 263, mod1 = 1E9 + 7, mod2 = 1E9 + 9;
-constexpr static int N = 1E6 + 5; // modify
- 
+constexpr static int base1 = 121, base2 = 263;
+constexpr static int mod1 = 1E9 + 7, mod2 = 1E9 + 9;
+constexpr static int N = 1E5 + 5; // modify
+
 array<int, 2> pw[N], invpw[N];
 array<int, 2> pref[N];
-class StringHashing {
+
+class Hashing {
 private:
+
+  string s;
+
   int p(int a, int b, int M) {
       int ans = 1 % M;
       while (b) {
@@ -24,7 +29,7 @@ private:
   }
  
 public:
-  StringHashing() {
+  Hashing() {
       pre();
   }
  
@@ -51,15 +56,14 @@ public:
       int n = s.size();
       array<int, 2> hash{0, 0};
       for (int i = 0; i < n; ++i) {
-          hash[0] += 1LL * s[i] * pw[i][0] % mod1;
-          hash[1] += 1LL * s[i] * pw[i][1] % mod2;
-          hash[0] %= mod1;
-          hash[1] %= mod2;
+          hash[0] = (hash[0] + 1LL * s[i] * pw[i][0]) % mod1;
+          hash[1] = (hash[1] + 1LL * s[i] * pw[i][1]) % mod2;
       }
       return hash;
   }
  
-  void build(string &s) {
+  void build(string &t) {
+      s = t;
       int n = s.size();
       for (int i = 0; i < n; ++i) {
           pref[i][0] = 1LL * s[i] * pw[i][0] % mod1;
@@ -69,17 +73,15 @@ public:
       }
   }
  
-  array<int, 2> get_substr_hash(string &s, int l, int r) {
+  array<int, 2> get_sub_hash(int l, int r) {
       assert(l <= r);
       array<int, 2> hs{0, 0};
       hs[0] = pref[r][0];
       if (l) hs[0] = (hs[0] - pref[l - 1][0] + mod1) % mod1;
-      hs[0] = 1LL * hs[0] * invpw[l][0] % mod1;
-      hs[0] %= mod1;
+      hs[0] = (1LL * hs[0] * invpw[l][0]) % mod1;
       hs[1] = pref[r][1];
       if (l) hs[1] = (hs[1] - pref[l - 1][1] + mod2) % mod2;
-      hs[1] = 1LL * hs[1] * invpw[l][1] % mod2;
-      hs[1] %= mod2;
+      hs[1] = (1LL * hs[1] * invpw[l][1]) % mod2;
       return hs;
   }
 };
