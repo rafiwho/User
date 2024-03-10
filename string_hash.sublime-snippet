@@ -1,16 +1,16 @@
 <snippet>
 	<content><![CDATA[
-constexpr static int base1 = 121, base2 = 263;
-constexpr static int mod1 = 1E9 + 7, mod2 = 1E9 + 9;
-constexpr static int N = 1E5 + 5; // modify
+const int base1 = 121, base2 = 263;
+const int mod1 = 1E9 + 7, mod2 = 1E9 + 9;
+const int N = 1E6 + 5; // modify
 
 array<int, 2> pw[N], invpw[N];
-array<int, 2> pref[N];
 
 class Hashing {
 private:
 
   string s;
+  array<int, 2> pref[N];
 
   int p(int a, int b, int M) {
       int ans = 1 % M;
