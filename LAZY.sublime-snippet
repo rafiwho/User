@@ -1,83 +1,78 @@
 <snippet>
 	<content><![CDATA[
 template <typename T>
-struct LAZY {
-	vector<T>v, t, L;
-	size_t size = 0;
+struct LazySegmentTree {
+    vector<T> v, t, L;
+    size_t size = 0;
 
-	LAZY(const vector<T>&vv) {
-		v = vv;
-		size = int(vv.size());
-		t.assign(size << 2 , 0);
-		L.assign(size << 2 , -1); // change to 0 in need
-		if (!vv.empty())
-			build(1, 1, size);
-	}
+    LazySegmentTree(const vector<T>& vv) {
+        v = vv;
+        size = vv.size();
+        t.assign(size << 2, 0);
+        L.assign(size << 2, -1); // Lazy propagation array initialized with -1
+        if (!vv.empty())
+            build(1, 0, size - 1);
+    }
 
-	void push(T node, T st, T en) {
-		if (L[node] == -1) {
-			return;
-		} else {
-			t[node] = (en - st + 1) * L[node]; // change in need
-			T mid = (st + en) >> 1;
-			if (st != en) {
-				L[node << 1] =  L[node << 1 | 1] = L[node] ; // propagate
-			}
-			L[node] = -1;
-		}
-	}
+    void push(int node, int st, int en) {
+        if (L[node] != -1) {
+            t[node] = (en - st + 1) * L[node]; // Lazy update
+            if (st != en) {
+                L[node << 1] = L[node << 1 | 1] = L[node]; // Propagate to children
+            }
+            L[node] = -1; // Reset lazy value
+        }
+    }
 
-	T mrge(T a, T b) {
-		return (a + b);//change in need
-	}
+    T merge(T a, T b) {
+        return (a + b); // Change as needed
+    }
 
-	void build(T N , T s, T e) {
-		if (s == e) {
-			t[N] = v[s];
-			return;
-		}
-		int mid = (s + e) >> 1;
-		build(N << 1, s, mid);
-		build(N << 1 | 1, mid + 1, e);
-		t[N] = mrge(t[N << 1], t[N << 1 | 1]);
-	}
+    void build(int N, int s, int e) {
+        if (s == e) {
+            t[N] = v[s];
+            return;
+        }
+        int mid = (s + e) >> 1;
+        build(N << 1, s, mid);
+        build(N << 1 | 1, mid + 1, e);
+        t[N] = merge(t[N << 1], t[N << 1 | 1]);
+    }
 
-	void update(T l, T r, T v) {
-		update(1, 1, size, l, r, v);
-	}
+    void update(int l, int r, T val) {
+        update(1, 0, size - 1, l, r, val);
+    }
 
-	void update(T N, T s, T e, T l, T r, T x) {
-		push(N, s, e);
-		if (s > r || e < l) {
-			return;
-		}
-		if (s >= l && e <= r) {
-			L[N] = x; // change in need
-			push(N, s, e);
-			return;
-		} else {
-			int m = (s + e) >> 1;
-			update(N << 1, s, m, l, r, x);
-			update(N << 1 | 1, m + 1, e, l, r, x);
-			t[N] = mrge(t[N << 1] , t[N << 1 | 1]);
-		}
-	}
+    void update(int N, int s, int e, int l, int r, T val) {
+        push(N, s, e);
+        if (s > r || e < l)
+            return;
+        if (s >= l && e <= r) {
+            L[N] = val; // Lazy update
+            push(N, s, e);
+            return;
+        }
+        int mid = (s + e) >> 1;
+        update(N << 1, s, mid, l, r, val);
+        update(N << 1 | 1, mid + 1, e, l, r, val);
+        t[N] = merge(t[N << 1], t[N << 1 | 1]);
+    }
 
-	T query(T l, T r) {
-		return query(1, 1, size, l, r);
-	}
+    T query(int l, int r) {
+        return query(1, 0, size - 1, l, r);
+    }
 
-	T query(T N, T s, T e, T l, T r) {
-		push(N, s, e);
-		if (s > r || e < l)return 0;//change in need
-		if (s >= l && e <= r)return t[N];
-		else {
-			int m = (s + e) >> 1;
-			T q1 = query(N << 1, s, m, l, r);
-			T q2 = query(N << 1 | 1, m + 1, e, l, r);
-			return mrge(q1, q2);
-		}
-	}
+    T query(int N, int s, int e, int l, int r) {
+        push(N, s, e);
+        if (s > r || e < l)
+            return 0; // Change as needed
+        if (s >= l && e <= r)
+            return t[N];
+        int mid = (s + e) >> 1;
+        T q1 = query(N << 1, s, mid, l, r);
+        T q2 = query(N << 1 | 1, mid + 1, e, l, r);
+        return merge(q1, q2);
+    }
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
