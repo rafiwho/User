@@ -2,11 +2,10 @@
 	"bootstrapped": true,
 	"installed_packages":
 	[
-		"Monokai Gray",
-		"Monokai++",
+		"LSP",
+		"LSP-clangd",
 		"Package Control",
 		"PackageResourceViewer",
-		"Theme - Monokai Pro",
 	],
 	"in_process_packages":
 	[
