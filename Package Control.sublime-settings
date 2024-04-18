@@ -2,8 +2,11 @@
 	"bootstrapped": true,
 	"installed_packages":
 	[
+		"Monokai Gray",
+		"Monokai++",
 		"Package Control",
 		"PackageResourceViewer",
+		"Theme - Monokai Pro",
 	],
 	"in_process_packages":
 	[
