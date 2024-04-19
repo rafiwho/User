@@ -6,6 +6,7 @@
 		"LSP-clangd",
 		"Package Control",
 		"PackageResourceViewer",
+		"SublimeAStyleFormatter",
 	],
 	"in_process_packages":
 	[
