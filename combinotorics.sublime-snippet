@@ -46,6 +46,7 @@ struct Combi {
   inline mint ncr(int n, int k) { return n < k ? 0 : facts[n] * finvs[k] * finvs[n - k]; }
   inline mint npr(int n, int k) { return n < k ? 0 : facts[n] * facts[n - k]; }
 };
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>comb</tabTrigger>
