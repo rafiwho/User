@@ -13,4 +13,6 @@
 	"index_files": true,
 	"theme": "Default Dark.sublime-theme",
 	"font_size": 11,
+	// "auto_complete": false,
+
 }
