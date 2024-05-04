@@ -1,5 +1,5 @@
 {
-	"color_scheme": "Monokai.sublime-color-scheme",
+	"color_scheme": "Monokai Classic.sublime-color-scheme",
 	"remember_open_files": true,
 	"word_wrap": true,
 	"remember_layout": true,
@@ -12,7 +12,7 @@
 
 	"index_files": true,
 	"theme": "Default Dark.sublime-theme",
-	"font_size": 11,
+	"font_size": 13,
 	// "auto_complete": false,
 
 }
