@@ -1,11 +1,12 @@
 <snippet>
 	<content><![CDATA[
+const int MAXN = 1E5 + 5;
 struct DS {
   set<int> missing_numbers;
   map<int, int> mp;
 
   DS() {
-    for (int i = 0; i <= n; i++) {
+    for (int i = 0; i <= MAXN; i++) {
       missing_numbers.insert(i);
     }
   };
