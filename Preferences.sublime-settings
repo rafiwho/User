@@ -14,5 +14,6 @@
 	"theme": "Default Dark.sublime-theme",
 	"font_size": 12,
 	// "auto_complete": false,
+	"tab_size": 3,
 
 }
