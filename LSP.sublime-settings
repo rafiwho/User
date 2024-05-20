@@ -1,3 +1,9 @@
 {
-     // "only_show_lsp_completions": true,
+    "clients": {
+        "clangd": {
+            "enabled": true,
+            "command": ["clangd", "--header-insertion=never"],
+            "selector": "source.c, source.c++, source.objc, source.objcpp"
+        }
+    }
 }
