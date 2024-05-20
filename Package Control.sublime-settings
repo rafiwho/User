@@ -3,10 +3,10 @@
 	"installed_packages":
 	[
 		"LSP",
+		"LSP-clangd",
 		"Package Control",
 		"PackageResourceViewer",
 		"SublimeAStyleFormatter",
-		"Theme - Monokai Pro",
 	],
 	"in_process_packages":
 	[
