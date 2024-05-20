@@ -1,3 +1,52 @@
 {
-   
+    "show_view_status": true,
+    "lsp_format_on_paste": true,
+    "show_code_actions": "bulb",
+    "lsp_code_actions_on_save": {
+        "source.fixAll": true,
+        "source.organizeImports": true
+    },
+    "on_save_task_timeout_ms": 5000,
+    "show_diagnostics_count_in_view_status": true,
+    "show_diagnostics_in_view_status": true,
+    "show_diagnostics_severity_level": 4,
+    "show_diagnostics_annotations_severity_level": 2,
+    "show_diagnostics_panel_on_save": 1,
+    "diagnostics_panel_include_severity_level": 4,
+    "diagnostics_delay_ms": 500,
+    "diagnostics_additional_delay_auto_complete_ms": 0,
+    "diagnostics_highlight_style": {
+        "error": "squiggly",
+        "warning": "squiggly",
+        "info": "stippled",
+        "hint": "stippled"
+    },
+    "diagnostics_gutter_marker": "dot",
+    "show_multiline_diagnostics_highlights": true,
+    "popup_max_characters_width": 80,
+    "popup_max_characters_height": 300,
+    "show_code_actions_in_hover": true,
+    "show_symbol_action_links": true,
+    "inhibit_snippet_completions": false,
+    "inhibit_word_completions": false,
+    "completion_insert_mode": "insert",
+    "show_references_in_quick_panel": true,
+    "show_code_lens": "annotation",
+    "show_inlay_hints": true,
+    "document_highlight_style": "underline",
+    "show_multiline_document_highlights": true,
+    "hover_highlight_style": "",
+    "link_highlight_style": "underline",
+    "semantic_highlighting": true,
+    "initially_folded": [
+        "comment",
+        "imports"
+    ],
+    "refactoring_auto_save": "preserve",
+    "log_debug": true,
+    "log_server": [
+        "panel"
+    ],
+    "log_max_size": 16384,
+    "clients": {}
 }
