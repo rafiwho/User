@@ -1,0 +1,6 @@
+{
+	"shell_cmd": "ulimit -s unlimited; ulimit -f 1024; ulimit -t 2; g++ -std=c++23 \"${file}\" -o \"${file_path}/${file_base_name}\" && ulimit -t 2; \"${file_path}/${file_base_name}\" < ~/codes/inputf.in > ~/codes/outputf.in && rm \"${file_path}/${file_base_name}\"",
+	"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$",
+	"working_dir": "${file_path}",
+	"selector": "source.c++"
+}
