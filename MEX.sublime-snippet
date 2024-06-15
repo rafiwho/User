@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-const int MAXN = 1E5 + 5;
+constexpr int MAXN = 1E5 + 5;
 struct DS {
   set<int> missing_numbers;
   map<int, int> mp;

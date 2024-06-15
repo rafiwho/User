@@ -1,7 +1,7 @@
 <snippet>
 	<content><![CDATA[
 //make all bit to set()
-const int N = int(1e7);
+constexpr int N = int(1E7);
 bitset<N>arr;
 void sieve() {
 	arr[0] = arr[1] = false;

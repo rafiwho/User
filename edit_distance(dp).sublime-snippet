@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-const int INF = int(1e9) + 5;
+constexpr int INF = int(1E9) + 5;
 int edit_distance(const string &S, const string &T) {
      int n = int(S.size());
      int m = int(T.size());
