@@ -1,0 +1,42 @@
+<snippet>
+	<content><![CDATA[
+class SparseTable {
+private:
+	std::vector<std::vector<int64_t>> table;
+	std::vector<int> log2;
+	int n;
+
+public:
+	SparseTable(const std::vector<int64_t>& arr) {
+		n = arr.size();
+		int logn = static_cast<int>(std::log2(n)) + 1;
+		log2.resize(n + 1);
+		table.assign(logn, std::vector<int64_t>(n));
+
+		for (int i = 2; i <= n; ++i) {
+			log2[i] = log2[i / 2] + 1;
+		}
+
+		for (int i = 0; i < n; ++i) {
+			table[0][i] = arr[i];
+		}
+
+		for (int k = 1; (1 << k) <= n; ++k) {
+			for (int i = 0; i + (1 << k) - 1 < n; ++i) {
+				table[k][i] = table[k - 1][i] | table[k - 1][i + (1 << (k - 1))];
+			}
+		}
+	}
+
+	int64_t rangeOR(int l, int r) {
+		int len = r - l + 1;
+		int k = log2[len];
+		return table[k][l] | table[k][r - (1 << k) + 1];
+	}
+};
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>spt</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
