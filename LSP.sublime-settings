@@ -1,9 +1,9 @@
 {
-  "clients": {
-    "clangd": {
-      "command": ["/usr/bin/clangd-18", "--header-insertion=never"],
-      "selector": "source.c | source.c++ | source.objc | source.objcpp",
-      "enabled": true
-    }
-  }
+  // "clients": {
+  //   "clangd": {
+  //     "command": ["/usr/bin/clangd-18", "--header-insertion=never"],
+  //     "selector": "source.c | source.c++ | source.objc | source.objcpp",
+  //     "enabled": true
+  //   }
+  // },
 }
