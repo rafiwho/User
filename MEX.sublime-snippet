@@ -1,29 +1,27 @@
 <snippet>
 	<content><![CDATA[
-constexpr int MAXN = 1E5 + 5;
-struct DS {
-  set<int> missing_numbers;
-  map<int, int> mp;
+constexpr int MAXN = 1E6;
 
-  DS() {
-    for (int i = 0; i <= MAXN; i++) {
-      missing_numbers.insert(i);
-    }
-  };
+struct DS {
+  int fre[MAXN + 1] = {0};
+  int mex = 0;
+
   void insert(int x) {
-    mp[x]++;
-    if (mp[x] == 1)
-      missing_numbers.erase(x);
+    fre[x]++;
+    while (mex <= MAXN && fre[mex] > 0) {
+      mex++;
+    }
   }
 
   void remove(int x) {
-    mp[x]--;
-    if (mp[x] == 0) {
-      missing_numbers.insert(x);
+    fre[x]--;
+    if (x < mex && fre[x] == 0) {
+      mex = x;
     }
   }
+
   int getMex() {
-    return *missing_numbers.begin();
+    return mex;
   }
 };
 ]]></content>

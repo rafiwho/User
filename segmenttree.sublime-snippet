@@ -1,64 +1,44 @@
 <snippet>
 	<content><![CDATA[
-template <typename T>
-class SegmentTree {
-private:
-    vector<T> tree;
-    int size;
+const int N = 3e5 + 9;
 
-    T merge(T a, T b) {
-        return a + b; // For sum
+int a[N];
+struct ST {
+  int t[4 * N];
+  static const int inf = 1e9;
+  ST() {
+    memset(t, 0, sizeof t);
+  }
+  void build(int n, int b, int e) {
+    if (b == e) {
+      t[n] = a[b];
+      return;
     }
-
-    void build(const vector<T>& arr, int v, int tl, int tr) {
-        if (tl == tr) {
-            tree[v] = arr[tl];
-        } else {
-            int tm = (tl + tr) / 2;
-            build(arr, v << 1, tl, tm);
-            build(arr, v << 1 | 1, tm + 1, tr);
-            tree[v] = merge(tree[v << 1], tree[v << 1 | 1]);
-        }
+    int mid = (b + e) >> 1, l = n << 1, r = l | 1;
+    build(l, b, mid);
+    build(r, mid + 1, e);
+    t[n] = max(t[l], t[r]);
+  }
+  void upd(int n, int b, int e, int i, int x) {
+    if (b > i || e < i) return;
+    if (b == e && b == i) {
+      t[n] = x;
+      return;
     }
-
-    T query(int v, int tl, int tr, int l, int r) {
-        if (l > r)
-            return 0; // or appropriate value
-        if (l == tl && r == tr)
-            return tree[v];
-        int tm = (tl + tr) / 2;
-        return merge(query(v << 1, tl, tm, l, min(r, tm)),
-                     query(v << 1 | 1, tm + 1, tr, max(l, tm + 1), r));
-    }
-
-    void update(int v, int tl, int tr, int pos, T newVal) {
-        if (tl == tr) {
-            tree[v] = newVal;
-        } else {
-            int tm = (tl + tr) / 2;
-            if (pos <= tm)
-                update(v << 1, tl, tm, pos, newVal);
-            else
-                update(v << 1 | 1, tm + 1, tr, pos, newVal);
-            tree[v] = merge(tree[v << 1], tree[v << 1 | 1]);
-        }
-    }
-
-public:
-    SegmentTree(const vector<T>& arr) {
-        size = arr.size();
-        tree.assign(size << 2, 0); // adjust size as needed
-        build(arr, 1, 0, size - 1);
-    }
-
-    T query(int l, int r) {
-        return query(1, 0, size - 1, l, r);
-    }
-
-    void update(int pos, T newVal) {
-        update(1, 0, size - 1, pos, newVal);
-    }
-};
+    int mid = (b + e) >> 1, l = n << 1, r = l | 1;
+    upd(l, b, mid, i, x);
+    upd(r, mid + 1, e, i, x);
+    t[n] = max(t[l], t[r]);
+  }
+  int query(int n, int b, int e, int i, int j) {
+    if (b > j || e < i) return -inf;
+    if (b >= i && e <= j) return t[n];
+    int mid = (b + e) >> 1, l = n << 1, r = l | 1;
+    int L = query(l, b, mid, i, j);
+    int R = query(r, mid + 1, e, i, j);
+    return max(L, R);
+  }
+}t;
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>RMQ</tabTrigger>
