@@ -1,9 +1,9 @@
 <snippet>
 	<content><![CDATA[
-//make all bit to set()
 constexpr int N = int(1E7);
 bitset<N>arr;
 void sieve() {
+	arr.set();
 	arr[0] = arr[1] = false;
 	for (int i = 3; i * i <= N; i += 2) {
 		if (arr[i]) {
