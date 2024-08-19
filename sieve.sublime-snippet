@@ -1,21 +1,26 @@
 <snippet>
 	<content><![CDATA[
 constexpr int N = int(1E7);
-bitset<N>arr;
+constexpr int N_2 = (N + 1) / 2;
+bitset<N_2> arr;
+
 void sieve() {
 	arr.set();
-	arr[0] = arr[1] = false;
 	for (int i = 3; i * i <= N; i += 2) {
-		if (arr[i]) {
-			for (int j = i * i; j < N; j += i + i) {
-				arr[j]  = false;
+		if (arr[i / 2]) {
+			for (int j = i * i; j < N; j += i * 2) {
+				arr[j / 2] = false;
 			}
 		}
 	}
 }
+
 bool is_p(int n) {
-	return (n & 1 || n == 2) && arr[n];
+	if (n == 2) return true;
+	if (n % 2 == 0 || n < 2) return false;
+	return arr[n / 2];
 }
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>sieve</tabTrigger>
