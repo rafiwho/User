@@ -3,39 +3,65 @@
 using dist_t = long double;
 
 struct point {
-	int64_t x, y;
+    int64_t x, y;
 
-	point() : x(0), y(0) {}
+    point(): x(0), y(0) {}
 
-	point(int64_t _x, int64_t _y) : x(_x), y(_y) {}
+    point(int64_t _x, int64_t _y): x(_x), y(_y) {}
 
-	point& operator+=(const point &other) { x += other.x; y += other.y; return *this; }
-	point& operator-=(const point &other) { x -= other.x; y -= other.y; return *this; }
-	point& operator*=(int64_t mult) { x *= mult; y *= mult; return *this; }
+    point & operator += (const point & other) {
+        x += other.x;
+        y += other.y;
+        return * this;
+    }
+    point & operator -= (const point & other) {
+        x -= other.x;
+        y -= other.y;
+        return * this;
+    }
+    point & operator *= (int64_t mult) {
+        x *= mult;
+        y *= mult;
+        return * this;
+    }
 
-	point operator+(const point &other) const { return point(*this) += other; }
-	point operator-(const point &other) const { return point(*this) -= other; }
-	point operator*(int64_t mult) const { return point(*this) *= mult; }
+    point operator + (const point & other) const {
+        return point( * this) += other;
+    }
+    point operator - (const point & other) const {
+        return point( * this) -= other;
+    }
+    point operator * (int64_t mult) const {
+        return point( * this) *= mult;
+    }
 
-	bool operator==(const point &other) const { return x == other.x && y == other.y; }
-	bool operator!=(const point &other) const { return !(*this == other); }
+    bool operator == (const point & other) const {
+        return x == other.x && y == other.y;
+    }
+    bool operator != (const point & other) const {
+        return !( * this == other);
+    }
 
-	point operator-() const { return point(-x, -y); }
-	point rotate90() const { return point(-y, x); }
+    point operator - () const {
+        return point(-x, -y);
+    }
+    point rotate90() const {
+        return point(-y, x);
+    }
 
-	dist_t dist(point b) const {
-		return hypot(x - b.x, y - b.y);
-	}
+    dist_t dist(point b) const {
+        return abs(x - b.x) + abs(y - b.y);
+    }
 
-	friend ostream& operator<<(ostream &os, const point &p) {
-		return os << p.x << " " << p.y;
-	}
+    friend ostream & operator << (ostream & os,
+        const point & p) {
+        return os << p.x << " " << p.y;
+    }
 
-	friend istream& operator>>(istream &is, point &p) {
-		return is >> p.x >> p.y;
-	}
+    friend istream & operator >> (istream & is, point & p) {
+        return is >> p.x >> p.y;
+    }
 };
-
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>POINT</tabTrigger>
