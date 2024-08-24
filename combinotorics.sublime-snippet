@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-const int N = 1e6 + 5, mod = 1E9 + 7;
+const int N = 1E6 + 5, mod = 1E9 + 7;
 template <const int32_t MOD>
 struct modint {
   int32_t value;
