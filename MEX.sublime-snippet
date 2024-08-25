@@ -1,22 +1,22 @@
 <snippet>
 	<content><![CDATA[
-constexpr int MAXN = 1E6;
-
 struct DS {
-  int fre[MAXN + 1] = {0};
+  std::unordered_map<int, int> fre;
   int mex = 0;
 
   void insert(int x) {
     fre[x]++;
-    while (mex <= MAXN && fre[mex] > 0) {
+    while (fre[mex] > 0) {
       mex++;
     }
   }
 
   void remove(int x) {
-    fre[x]--;
-    if (x < mex && fre[x] == 0) {
-      mex = x;
+    if (fre[x] > 0) {
+      fre[x]--;
+      if (fre[x] == 0 && x < mex) {
+        mex = x;
+      }
     }
   }
 
