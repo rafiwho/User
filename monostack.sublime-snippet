@@ -1,0 +1,23 @@
+<snippet>
+	<content><![CDATA[
+std::vector<int> nextGreaterElements(const std::vector<int>& nums) {
+    int n = nums.size();
+    std::vector<int> result(n, -1);
+    std::stack<int> s;
+
+    for (int i = 0; i < n; ++i) {
+        while (!s.empty() && nums[s.top()] < nums[i]) {
+            result[s.top()] = nums[i];
+            s.pop();
+        }
+        s.push(i);
+    }
+
+    return result;
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>monostack</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
