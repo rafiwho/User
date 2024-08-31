@@ -1,38 +1,45 @@
 <snippet>
 	<content><![CDATA[
-class SparseTable {
+template <typename T>
+class SPT {
 private:
-	std::vector<std::vector<int64_t>> table;
-	std::vector<int> log2;
-	int n;
+    std::vector<std::vector<T>> table;
+    std::vector<int> log2;
+    int n;
+    std::function<T(T, T)> operation;
+    T identity;
 
 public:
-	SparseTable(const std::vector<int64_t>& arr) {
-		n = arr.size();
-		int logn = static_cast<int>(std::log2(n)) + 1;
-		log2.resize(n + 1);
-		table.assign(logn, std::vector<int64_t>(n));
+    SPT(const std::vector<T>& arr, std::function<T(T, T)> op, T id) {
+        n = arr.size();
+        operation = op;
+        identity = id;
 
-		for (int i = 2; i <= n; ++i) {
-			log2[i] = log2[i / 2] + 1;
-		}
+        int logn = static_cast<int>(std::log2(n)) + 1;
+        log2.resize(n + 1);
+        table.assign(logn, std::vector<T>(n, identity));
 
-		for (int i = 0; i < n; ++i) {
-			table[0][i] = arr[i];
-		}
+        log2[1] = 0;
+        for (int i = 2; i <= n; ++i) {
+            log2[i] = log2[i / 2] + 1;
+        }
 
-		for (int k = 1; (1 << k) <= n; ++k) {
-			for (int i = 0; i + (1 << k) - 1 < n; ++i) {
-				table[k][i] = table[k - 1][i] | table[k - 1][i + (1 << (k - 1))];
-			}
-		}
-	}
+        for (int i = 0; i < n; ++i) {
+            table[0][i] = arr[i];
+        }
 
-	int64_t query(int l, int r) {
-		int len = r - l + 1;
-		int k = log2[len];
-		return table[k][l] | table[k][r - (1 << k) + 1];
-	}
+        for (int k = 1; (1 << k) <= n; ++k) {
+            for (int i = 0; i + (1 << k) - 1 < n; ++i) {
+                table[k][i] = operation(table[k - 1][i], table[k - 1][i + (1 << (k - 1))]);
+            }
+        }
+    }
+
+    T query(int l, int r) {
+        int len = r - l + 1;
+        int k = log2[len];
+        return operation(table[k][l], table[k][r - (1 << k) + 1]);
+    }
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
