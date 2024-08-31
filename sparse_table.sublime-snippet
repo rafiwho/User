@@ -28,7 +28,7 @@ public:
 		}
 	}
 
-	int64_t rangeOR(int l, int r) {
+	int64_t query(int l, int r) {
 		int len = r - l + 1;
 		int k = log2[len];
 		return table[k][l] | table[k][r - (1 << k) + 1];
