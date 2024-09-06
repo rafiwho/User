@@ -50,11 +50,11 @@ struct point {
     }
 
     dist_t dist(point b) const {
-        return abs(x - b.x) + abs(y - b.y);
+        return hypotl(x - b.x, y - b.y);
     }
 
     friend ostream & operator << (ostream & os,
-        const point & p) {
+                                  const point & p) {
         return os << p.x << " " << p.y;
     }
 
