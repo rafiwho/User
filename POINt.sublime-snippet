@@ -24,7 +24,6 @@ struct point {
         y *= mult;
         return * this;
     }
-
     point operator + (const point & other) const {
         return point( * this) += other;
     }
@@ -34,30 +33,24 @@ struct point {
     point operator * (int64_t mult) const {
         return point( * this) *= mult;
     }
-
     bool operator == (const point & other) const {
         return x == other.x && y == other.y;
     }
     bool operator != (const point & other) const {
         return !( * this == other);
     }
-
     point operator - () const {
         return point(-x, -y);
     }
     point rotate90() const {
         return point(-y, x);
     }
-
     dist_t dist(point b) const {
         return hypotl(x - b.x, y - b.y);
     }
-
-    friend ostream & operator << (ostream & os,
-                                  const point & p) {
+    friend ostream & operator << (ostream & os, const point & p) {
         return os << p.x << " " << p.y;
     }
-
     friend istream & operator >> (istream & is, point & p) {
         return is >> p.x >> p.y;
     }
