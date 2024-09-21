@@ -29,9 +29,14 @@ public:
     }
 
     T query(int l, int r) {
-        int len = r - l + 1;
-        int k = __bit_width(len) - 1;
-        return operation(table[k][l], table[k][r - (1 << k) + 1]);
+        T result = identity;
+        for (int k = __bit_width(r - l + 1) - 1; k >= 0; --k) {
+            if ((1 << k) <= r - l + 1) {
+                result = operation(result, table[k][l]);
+                l += (1 << k);
+            }
+        }
+        return result;
     }
 };
 ]]></content>
