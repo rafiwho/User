@@ -1,18 +1,15 @@
 {
-	"color_scheme": "Monokai.sublime-color-scheme",
-	"remember_open_files": true,
-	"word_wrap": true,
-	"remember_layout": true,
-	"update_check": false,
-	"save_on_focus_lost": true,
-
-	"index_files": true,
+	"color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
 	"font_size": 11,
-	// "auto_complete": false,
-	"tab_size": 3,
-
 	"ignored_packages":
 	[
-		"Vintage",
+		"Vintage"
 	],
+	"index_files": true,
+	"remember_layout": true,
+	"remember_open_files": true,
+	"save_on_focus_lost": true,
+	"tab_size": 3,
+	"update_check": false,
+	"word_wrap": true
 }
