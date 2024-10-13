@@ -63,17 +63,16 @@ struct Hashing {
       }
   }
 
-
-  array<int, 2> get_sub_hash(int l, int r) {
-      array<int, 2> hs{0, 0};
-      hs[0] = pref[r][0];
-      if (l) hs[0] = (hs[0] - pref[l - 1][0] + mod1) % mod1;
-      hs[0] = (1LL * hs[0] * invpw[l][0]) % mod1;
-      hs[1] = pref[r][1];
-      if (l) hs[1] = (hs[1] - pref[l - 1][1] + mod2) % mod2;
-      hs[1] = (1LL * hs[1] * invpw[l][1]) % mod2;
-      return hs;
-  }
+  long long get_sub_hash(int l, int r) {
+        array<int, 2> hs{0, 0};
+        hs[0] = pref[r][0];
+        if (l) hs[0] = (hs[0] - pref[l - 1][0] + mod1) % mod1;
+        hs[0] = 1LL * hs[0] * invpw[l][0] % mod1;
+        hs[1] = pref[r][1];
+        if (l) hs[1] = (hs[1] - pref[l - 1][1] + mod2) % mod2;
+        hs[1] = 1LL * hs[1] * invpw[l][1] % mod2;
+        return (1LL * hs[0] << 31) | hs[1];
+    }
 };
 
 ]]></content>
