@@ -1,6 +1,7 @@
 <snippet>
 	<content><![CDATA[
-template <typename D> vector<D> get_div(D n) {
+template <typename D> 
+vector<D> get_div(D n) {
     vector<D> divs;
     for (D i = 1; i * i <= n; ++i) {
         if (n % i == 0) {
