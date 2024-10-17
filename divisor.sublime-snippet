@@ -1,15 +1,15 @@
 <snippet>
 	<content><![CDATA[
-vector<int>get_div(int n) {
-    vector<int>divs;
-    for (int i = 1; i * i <= n; ++i) {
+template <typename D> vector<D> get_div(D n) {
+    vector<D> divs;
+    for (D i = 1; i * i <= n; ++i) {
         if (n % i == 0) {
             divs.push_back(i);
-            divs.push_back(n / i);
+            if (n ^ i * i) {
+                divs.push_back(n / i);
+            }
         }
     }
-    sort(divs.begin(), divs.end());
-    divs.erase(unique(divs.begin(), divs.end()), divs.end());
     return divs;
 }
 ]]></content>

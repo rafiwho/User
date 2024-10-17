@@ -1,10 +1,10 @@
 <snippet>
 	<content><![CDATA[
-template <typename T> void setmin(T &a, T b) { a = a < b ? a : b; }
-template <typename T> void setmax(T &a, T b) { a = a > b ? a : b; }
+template <typename T>
+using min_heap = priority_queue<T, vector<T>, greater<T>>;
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
-	<tabTrigger>ck</tabTrigger>
+	<tabTrigger>MIN_HEAP</tabTrigger>
 	<!-- Optional: Set a scope to limit where the snippet will trigger -->
 	<!-- <scope>source.python</scope> -->
 </snippet>
