@@ -1,5 +1,5 @@
 {
-    "binary": "auto",
+    "binary": "system",
     "system_binary": "clangd-18",
     "selector": "source.c | source.c++",
     "initializationOptions": {
