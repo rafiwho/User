@@ -1,0 +1,86 @@
+<snippet>
+	<content><![CDATA[
+using ll = long long;
+// this will work when the key is an int or long long int
+struct custom_hash {
+	static uint64_t splitmix64(uint64_t x) {
+		x += 0x9e3779b97f4a7c15;
+		x = (x ^ (x >> 30)) * 0xbf58476d1ce4e5b9;
+		x = (x ^ (x >> 27)) * 0x94d049bb133111eb;
+		return x ^ (x >> 31);
+	}
+
+	size_t operator()(uint64_t x) const {
+		static const uint64_t FIXED_RANDOM = chrono::steady_clock::now().time_since_epoch().count();
+		return splitmix64(x + FIXED_RANDOM);
+	}
+};
+ll gcd(ll a, ll b) {
+	if (b == 0) return a;
+	return gcd(b, a % b);
+}
+
+ll mulmod(ll a, ll b, ll mod) {
+	ll result = 0;
+	a %= mod;
+	while (b > 0) {
+		if (b % 2 == 1) {
+			result = (result + a) % mod;
+		}
+		a = (a * 2) % mod;
+		b /= 2;
+	}
+	return result;
+}
+
+ll f(ll x, ll c, ll mod) {
+	return (mulmod(x, x, mod) + c) % mod;
+}
+
+ll pollards_rho(ll n) {
+	if (n % 2 == 0) return 2;
+	ll x = 2, y = 2, c = rand() % (n - 1) + 1;
+	ll d = 1;
+	while (d == 1) {
+		x = f(x, c, n);
+		y = f(f(y, c, n), c, n);
+		d = gcd(abs(x - y), n);
+	}
+	return d;
+}
+
+bool isPrime(ll n) {
+	if (n <= 1) return false;
+	if (n == 2 || n == 3) return true;
+	if (n % 2 == 0 || n % 3 == 0) return false;
+	for (ll i = 5; i * i <= n; i += 6) {
+		if (n % i == 0 || n % (i + 2) == 0) return false;
+	}
+	return true;
+}
+void factorize(ll n, std::unordered_map<ll, int, custom_hash>& factors) {
+	if (n == 1) return;
+	if (n <= 1e6) {
+		for (ll i = 2; i * i <= n; i++) {
+			while (n % i == 0) {
+				factors[i]++;
+				n /= i;
+			}
+		}
+		if (n > 1) factors[n]++;
+		return;
+	}
+	if (isPrime(n)) {
+		factors[n]++;
+		return;
+	}
+	ll divisor = pollards_rho(n);
+	factorize(divisor, factors);
+	factorize(n / divisor, factors);
+}
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>pollard_rho</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

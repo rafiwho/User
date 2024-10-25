@@ -3,41 +3,46 @@
 template <typename T>
 class SPT {
 private:
-    vector<vector<T>> table;
-    int n;
-    function<T(T, T)> operation;
-    T identity;
+	vector<vector<T>> table;
+	int n;
+	function<T(T, T)> operation;
+	T identity;
 
 public:
-    SPT(const vector<T>& arr, function<T(T, T)> op, T id) {
-        n = arr.size();
-        operation = op;
-        identity = id;
+	SPT(const vector<T>& arr, function<T(T, T)> op, T id) {
+		n = arr.size();
+		operation = op;
+		identity = id;
 
-        int logn = __bit_width(n) - 1;
-        table.assign(logn + 1, vector<T>(n, identity));
+		int logn = __bit_width(n) - 1;
+		table.assign(logn + 1, vector<T>(n, identity));
 
-        for (int i = 0; i < n; ++i) {
-            table[0][i] = arr[i];
-        }
+		for (int i = 0; i < n; ++i) {
+			table[0][i] = arr[i];
+		}
 
-        for (int k = 1; (1 << k) <= n; ++k) {
-            for (int i = 0; i + (1 << k) - 1 < n; ++i) {
-                table[k][i] = operation(table[k - 1][i], table[k - 1][i + (1 << (k - 1))]);
-            }
-        }
-    }
+		for (int k = 1; (1 << k) <= n; ++k) {
+			for (int i = 0; i + (1 << k) - 1 < n; ++i) {
+				table[k][i] = operation(table[k - 1][i], table[k - 1][i + (1 << (k - 1))]);
+			}
+		}
+	}
 
-    T query(int l, int r) {
-        T result = identity;
-        for (int k = __bit_width(r - l + 1) - 1; k >= 0; --k) {
-            if ((1 << k) <= r - l + 1) {
-                result = operation(result, table[k][l]);
-                l += (1 << k);
-            }
-        }
-        return result;
-    }
+	T query(int l, int r, bool f = false) {
+		if (f == false) {
+			T result = identity;
+			for (int k = __bit_width(r - l + 1) - 1; k >= 0; --k) {
+				if ((1 << k) <= r - l + 1) {
+					result = operation(result, table[k][l]);
+					l += (1 << k);
+				}
+			}
+			return result;
+		}
+		int len = r - l + 1;
+		int k = __bit_width(len) - 1;
+		return operation(table[k][l], table[k][r - (1 << k) + 1]);
+	}
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
