@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-struct custom_hash {
+struct ch {
 	const uint64_t C = uint64_t(2e18 * acos(0)) + 71;
 	const uint32_t RANDOM = chrono::steady_clock::now().time_since_epoch().count();
 	size_t operator()(uint64_t x) const {
