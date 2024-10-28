@@ -2,6 +2,7 @@
   <content><![CDATA[
 #include <bits/stdc++.h>
 using namespace std;
+using ll = long long;
 
 void tcase() {$1$3$5
 }
