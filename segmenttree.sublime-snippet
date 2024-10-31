@@ -4,19 +4,19 @@ template <typename T>
 struct SegmentTree {
   vector<T> t;
   int n;
+  function<T(T, T)> mrg;
+  T id;
 
-  SegmentTree(int size) : n(size) {
-    t.assign(4 * n, 0);
+  SegmentTree(int size, function<T(T, T)> mergeFunc, T identityValue)
+    : n(size), mrg(mergeFunc), id(identityValue) {
+    t.assign(4 * n, id);
   }
 
-  SegmentTree(const vector<T>& values) {
+  SegmentTree(const vector<T>& values, function<T(T, T)> mergeFunc, T identityValue)
+    : mrg(mergeFunc), id(identityValue) {
     n = values.size();
-    t.assign(4 * n, 0);
+    t.assign(4 * n, id);
     build(values, 1, 0, n - 1);
-  }
-
-  T mrg(T left, T right) {
-    return max(left, right);
   }
 
   void build(const vector<T>& values, int node, int start, int end) {
@@ -45,7 +45,7 @@ struct SegmentTree {
   }
 
   T query(int node, int start, int end, int left, int right) {
-    if (start > right || end < left) return identity();
+    if (start > right || end < left) return id;
     if (start >= left && end <= right) return t[node];
     int mid = (start + end) >> 1;
     T l_query = query(node << 1, start, mid, left, right);
@@ -53,8 +53,12 @@ struct SegmentTree {
     return mrg(l_query, r_query);
   }
 
-  T identity() {
-    return numeric_limits<T>::min();
+  void update(int idx, T value) {
+    update(1, 0, n - 1, idx, value);
+  }
+
+  T query(int left, int right) {
+    return query(1, 0, n - 1, left, right);
   }
 };
 ]]></content>

@@ -1,81 +1,89 @@
 <snippet>
 	<content><![CDATA[
 template <typename T>
-struct LazySegmentTree {
-    vector<T> data, tree, lazy;
+class LazySegmentTree {
+    struct Node {
+        T value;
+        int count; // Optional: can be used for counting occurrences
+        Node() : value(T()), count(0) {}
+        Node(T v, int c) : value(v), count(c) {}
+    };
+
+    vector<Node> tree;
+    vector<int> lazy;
     size_t n;
+    function<Node(const Node&, const Node&)> merge;
+    T identity; // Identity value for the merge operation
 
-    LazySegmentTree(const vector<T>& values) {
-        data = values;
-        n = values.size();
-        tree.assign(n << 2, 0);
-        lazy.assign(n << 2, -1);
-        if (!values.empty())
-            build(1, 0, n - 1);
-    }
-
-    void push(int node, int start, int end) {
-        if (lazy[node] != -1) {
-            tree[node] = (end - start + 1) * lazy[node];
+    void propagate(int node, int start, int end) {
+        if (lazy[node] != 0) {
+            tree[node].value += lazy[node];
             if (start != end) {
-                lazy[node << 1] = lazy[node];
-                lazy[node << 1 | 1] = lazy[node];
+                lazy[node << 1] += lazy[node];
+                lazy[(node << 1) + 1] += lazy[node];
             }
-            lazy[node] = -1;
+            lazy[node] = 0;
         }
     }
 
-    T merge(T left, T right) {
-        return left + right;
-    }
-
-    void build(int node, int start, int end) {
+    void build(int node, int start, int end, const vector<T>& values) {
         if (start == end) {
-            tree[node] = data[start];
+            tree[node] = {values[start], 1};
+        } else {
+            int mid = (start + end) >> 1;
+            build(node << 1, start, mid, values);
+            build((node << 1) + 1, mid + 1, end, values);
+            tree[node] = merge(tree[node << 1], tree[(node << 1) + 1]);
+        }
+    }
+
+    void update(int node, int start, int end, int l, int r, int val) {
+        propagate(node, start, end);
+        if (start > r || end < l) return;
+        if (start >= l && end <= r) {
+            lazy[node] += val;
+            propagate(node, start, end);
             return;
         }
         int mid = (start + end) >> 1;
-        build(node << 1, start, mid);
-        build(node << 1 | 1, mid + 1, end);
-        tree[node] = merge(tree[node << 1], tree[node << 1 | 1]);
+        update(node << 1, start, mid, l, r, val);
+        update((node << 1) + 1, mid + 1, end, l, r, val);
+        tree[node] = merge(tree[node << 1], tree[(node << 1) + 1]);
     }
 
-    void range_update(int left, int right, T value) {
-        range_update(1, 0, n - 1, left, right, value);
-    }
-
-    void range_update(int node, int start, int end, int left, int right, T value) {
-        push(node, start, end);
-        if (start > right || end < left)
-            return;
-        if (start >= left && end <= right) {
-            lazy[node] = value;
-            push(node, start, end);
-            return;
+    Node query(int node, int start, int end, int l, int r) {
+        propagate(node, start, end);
+        if (start > r || end < l) {
+            return Node(identity, 0); // Return identity node if out of bounds
         }
-        int mid = (start + end) >> 1;
-        range_update(node << 1, start, mid, left, right, value);
-        range_update(node << 1 | 1, mid + 1, end, left, right, value);
-        tree[node] = merge(tree[node << 1], tree[node << 1 | 1]);
-    }
-
-    T range_query(int left, int right) {
-        return range_query(1, 0, n - 1, left, right);
-    }
-
-    T range_query(int node, int start, int end, int left, int right) {
-        push(node, start, end);
-        if (start > right || end < left)
-            return 0;
-        if (start >= left && end <= right)
+        if (start >= l && end <= r) {
             return tree[node];
+        }
         int mid = (start + end) >> 1;
-        T q1 = range_query(node << 1, start, mid, left, right);
-        T q2 = range_query(node << 1 | 1, mid + 1, end, left, right);
+        Node q1 = query(node << 1, start, mid, l, r);
+        Node q2 = query((node << 1) + 1, mid + 1, end, l, r);
         return merge(q1, q2);
     }
-};
 
+public:
+    LazySegmentTree(const vector<T>& values,
+                    function<Node(const Node&, const Node&)> mFunc,
+                    T id)
+        : merge(mFunc), identity(id) {
+        n = values.size();
+        tree.resize(4 * n);
+        lazy.assign(4 * n, 0);
+        build(1, 0, n - 1, values);
+    }
+
+    void range_update(int l, int r, int val) {
+        update(1, 0, n - 1, l, r, val);
+    }
+
+    T range_query(int l, int r) {
+        return query(1, 0, n - 1, l, r).value;
+    }
+};
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>LAZY</tabTrigger>
