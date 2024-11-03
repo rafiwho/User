@@ -1,0 +1,74 @@
+<snippet>
+	<content><![CDATA[
+struct Graph {
+	struct Edge {
+		int to;      
+		int capacity;   
+		int flow;       
+		int reverseIdx;  
+	};
+
+	int numNodes;
+	int source, sink;
+	vector<vector<Edge>> adj;
+
+	Graph(int n, int source, int sink) : numNodes(n), source(source), sink(sink) {
+		adj.resize(n);
+	}
+
+	void addEdge(int u, int v, int capacity) {
+		Edge a = {v, capacity, 0, (int) adj[v].size()};
+		Edge b = {u, 0, 0, (int) adj[u].size()};
+		adj[u].push_back(a);   // Forward edge
+		adj[v].push_back(b);   // Reverse edge
+	}
+
+	bool dfs(int node, int parent[], int parentEdge[]) {
+		if (node == sink) return true;
+		for (int i = 0; i < adj[node].size(); ++i) {
+			Edge &edge = adj[node][i];
+			int residualCapacity = edge.capacity - edge.flow;
+			if (residualCapacity > 0 && parent[edge.to] == -1) {
+				parent[edge.to] = node;
+				parentEdge[edge.to] = i;
+				if (dfs(edge.to, parent, parentEdge)) return true;
+			}
+		}
+		return false;
+	}
+
+	int fordFulkerson() {
+		int maxFlow = 0;
+		int parent[numNodes], parentEdge[numNodes];
+
+		while (true) {
+			memset(parent, -1, sizeof(parent));
+			if (!dfs(source, parent, parentEdge)) break;
+
+			int pathFlow = INT_MAX;
+			for (int node = sink; node != source; node = parent[node]) {
+				Edge &edge = adj[parent[node]][parentEdge[node]];
+				pathFlow = min(pathFlow, edge.capacity - edge.flow);
+			}
+
+			for (int node = sink; node != source; node = parent[node]) {
+				Edge &edge = adj[parent[node]][parentEdge[node]];
+				edge.flow += pathFlow;
+				adj[edge.to][edge.reverseIdx].flow -= pathFlow;
+			}
+			maxFlow += pathFlow;
+		}
+		return maxFlow;
+	}
+};
+// int n = 4; // Number of nodes
+// int source = 0, sink = 3;
+// Graph graph(n, source, sink);
+// graph.addEdge(0, 1, 10);
+// "The maximum flow is: graph.fordFulkerson()
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>flow</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>

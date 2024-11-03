@@ -1,0 +1,108 @@
+<snippet>
+	<content><![CDATA[
+const int INF = numeric_limits<int>::max();
+/*
+Johnson’s Algorithm is efficient for graphs that may contain negative weights while avoiding negative weight cycles.
+O(V^2 logV).
+*/
+struct Johnson {
+	int num_vertices;
+	vector<vector<pair<int, int>>> graph;
+
+	Johnson(int n) : num_vertices(n), graph(n) {}
+
+	void add_edge(int u, int v, int weight) {
+		graph[u].emplace_back(v, weight);
+	}
+
+	vector<int> bellman_ford(int source) {
+		vector<int> distance(num_vertices, INF);
+		distance[source] = 0;
+
+		for (int i = 0; i < num_vertices - 1; ++i) {
+			for (int u = 0; u < num_vertices; ++u) {
+				for (const auto& edge : graph[u]) {
+					int v = edge.first;
+					int weight = edge.second;
+					if (distance[u] != INF && distance[u] + weight < distance[v]) {
+						distance[v] = distance[u] + weight;
+					}
+				}
+			}
+		}
+
+		return distance;
+	}
+
+	vector<int> dijkstra(int source) {
+		vector<int> distance(num_vertices, INF);
+		distance[source] = 0;
+		priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
+		pq.emplace(0, source);
+
+		while (!pq.empty()) {
+			int dist = pq.top().first;
+			int u = pq.top().second;
+			pq.pop();
+
+			if (dist > distance[u]) continue;
+
+			for (const auto& edge : graph[u]) {
+				int v = edge.first;
+				int weight = edge.second;
+				if (distance[u] != INF && distance[u] + weight < distance[v]) {
+					distance[v] = distance[u] + weight;
+					pq.emplace(distance[v], v);
+				}
+			}
+		}
+
+		return distance;
+	}
+
+	vector<vector<int>> run() {
+		vector<vector<pair<int, int>>> modified_graph(num_vertices + 1);
+		for (int u = 0; u < num_vertices; ++u) {
+			for (const auto& edge : graph[u]) {
+				modified_graph[u].emplace_back(edge);
+			}
+			modified_graph[num_vertices].emplace_back(u, 0);
+		}
+
+		vector<int> h = bellman_ford(num_vertices);
+
+		vector<vector<pair<int, int>>> reweighted_graph(num_vertices);
+		for (int u = 0; u < num_vertices; ++u) {
+			for (const auto& edge : graph[u]) {
+				int v = edge.first;
+				int weight = edge.second;
+				if (h[u] != INF && h[v] != INF) {
+					reweighted_graph[u].emplace_back(v, weight + h[u] - h[v]);
+				}
+			}
+		}
+
+		vector<vector<int>> all_pairs_shortest_paths(num_vertices, vector<int>(num_vertices, INF));
+		for (int u = 0; u < num_vertices; ++u) {
+			vector<int> distances = dijkstra(u);
+			for (int v = 0; v < num_vertices; ++v) {
+				if (distances[v] != INF) {
+					all_pairs_shortest_paths[u][v] = distances[v] + h[v] - h[u];
+				}
+			}
+		}
+
+		return all_pairs_shortest_paths;
+	}
+
+};
+// Example usage
+// Johnson johnson(num_vertices);
+// johnson.add_edge(0, 1, -2);
+// vector<vector<int>> result = johnson.run();
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>johnson</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
