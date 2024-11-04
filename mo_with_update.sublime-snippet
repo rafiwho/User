@@ -1,0 +1,82 @@
+<snippet>
+	<content><![CDATA[
+struct MoWithUpdates {
+	int n, block_size, currentDistinct, curL, curR, curTime;
+	vector<int> arr, freq, currArr, answer;
+	vector<pair<int, int>> updates;
+
+	struct Query {
+		int l, r, time, idx;
+		bool isRangeQuery;
+	};
+
+	vector<Query> queries;
+
+	MoWithUpdates(int n, const vector<int>& arr) : n(n), arr(arr), freq(1000001), currArr(arr) {
+		block_size = static_cast<int>(pow(n, 2.0 / 3.0));
+		currentDistinct = curL = 0;
+		curR = -1;
+		curTime = 0;
+	}
+
+	void add(int idx) {
+		if (++freq[currArr[idx]] == 1) ++currentDistinct;
+	}
+
+	void remove(int idx) {
+		if (--freq[currArr[idx]] == 0) --currentDistinct;
+	}
+
+	void applyUpdate(int timeIdx) {
+		int uIdx = updates[timeIdx].first, newVal = updates[timeIdx].second;
+		if (curL <= uIdx && uIdx <= curR) remove(uIdx);
+		swap(currArr[uIdx], updates[timeIdx].second);
+		if (curL <= uIdx && uIdx <= curR) add(uIdx);
+	}
+
+	vector<int> processQueries() {
+		sort(queries.begin(), queries.end(), [&](const Query & a, const Query & b) {
+			int blockA = a.l / block_size, blockB = b.l / block_size;
+			if (blockA != blockB) return blockA < blockB;
+			if (a.r / block_size != b.r / block_size) return a.r < b.r;
+			return a.time < b.time;
+		});
+
+		answer.resize(queries.size());
+
+		for (const auto &query : queries) {
+			while (curL > query.l) add(--curL);
+			while (curR < query.r) add(++curR);
+			while (curL < query.l) remove(curL++);
+			while (curR > query.r) remove(curR--);
+
+			while (curTime < query.time) applyUpdate(curTime++);
+			while (curTime > query.time) applyUpdate(--curTime);
+
+			if (query.isRangeQuery) answer[query.idx] = currentDistinct;
+		}
+		return answer;
+	}
+
+	void addUpdate(int idx, int newVal) {
+		updates.emplace_back(idx, newVal);
+	}
+
+	void addRangeQuery(int l, int r, int queryIdx) {
+		queries.push_back({l, r, static_cast<int>(updates.size()), queryIdx, true});
+	}
+};
+
+/*
+	MoWithUpdates mo(n, arr);
+   int queryCount = 0;
+   mo.addRangeQuery(l - 1, r - 1, queryCount++);
+   mo.addUpdate(idx - 1, x);
+	vector<int> answers = mo.processQueries();
+*/
+]]></content>
+	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
+	<tabTrigger>mo_with_update</tabTrigger>
+	<!-- Optional: Set a scope to limit where the snippet will trigger -->
+	<!-- <scope>source.python</scope> -->
+</snippet>
