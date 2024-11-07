@@ -1,14 +1,14 @@
 <snippet>
 	<content><![CDATA[
-struct State {
-	int length, link;
-	std::map<char, int> transitions;
-	int cnt; // For counting occurrences
-	long long num_substrings; // Number of unique substrings from this state
-};
 
 class SuffixAutomaton {
 public:
+	struct State {
+		int length, link;
+		std::map<char, int> to;
+		int cnt; // For counting occurrences
+		long long num_substrings; // Number of unique substrings from this state
+	};
 	std::vector<State> states;
 	int last;
 
@@ -23,21 +23,21 @@ public:
 		int cur = states.size();
 		states.push_back({states[last].length + 1, 0, {}, 1});
 		int p = last;
-		while (p != -1 && !states[p].transitions.contains(c)) {
-			states[p].transitions[c] = cur;
+		while (p != -1 && !states[p].to.contains(c)) {
+			states[p].to[c] = cur;
 			p = states[p].link;
 		}
 		if (p == -1) {
 			states[cur].link = 0;
 		} else {
-			int q = states[p].transitions[c];
+			int q = states[p].to[c];
 			if (states[p].length + 1 == states[q].length) {
 				states[cur].link = q;
 			} else {
 				int clone = states.size();
-				states.push_back({states[p].length + 1, states[q].link, states[q].transitions, 0});
-				while (p != -1 && states[p].transitions[c] == q) {
-					states[p].transitions[c] = clone;
+				states.push_back({states[p].length + 1, states[q].link, states[q].to, 0});
+				while (p != -1 && states[p].to[c] == q) {
+					states[p].to[c] = clone;
 					p = states[p].link;
 				}
 				states[q].link = states[cur].link = clone;
@@ -48,8 +48,8 @@ public:
 	bool contains(const std::string &substr) {
 		int current = 0;
 		for (char c : substr) {
-			if (!states[current].transitions.contains(c)) return false;
-			current = states[current].transitions[c];
+			if (!states[current].to.contains(c)) return false;
+			current = states[current].to[c];
 		}
 		return true;
 	}
@@ -79,7 +79,7 @@ public:
 	long long count_substrings(int state) {
 		if (states[state].num_substrings != 0) return states[state].num_substrings;
 		long long cnt = 1;
-		for (auto &[c, next_state] : states[state].transitions) {
+		for (auto &[c, next_state] : states[state].to) {
 			cnt += count_substrings(next_state);
 		}
 		return states[state].num_substrings = cnt;
@@ -89,8 +89,8 @@ public:
 	int count_occurrences(const std::string &substr) {
 		int current = 0;
 		for (char c : substr) {
-			if (!states[current].transitions.count(c)) return 0;
-			current = states[current].transitions[c];
+			if (!states[current].to.count(c)) return 0;
+			current = states[current].to[c];
 		}
 		return states[current].cnt;
 	}
@@ -99,7 +99,7 @@ public:
 		int current = 0;
 		std::string result;
 		while (k > 0) {
-			for (auto &[c, next_state] : states[current].transitions) {
+			for (auto &[c, next_state] : states[current].to) {
 				int num = states[next_state].num_substrings;
 				if (k > num) {
 					k -= num;
@@ -117,12 +117,12 @@ public:
 	int longest_common_substring(const std::string &t) {
 		int current = 0, length = 0, best = 0;
 		for (char c : t) {
-			while (current != -1 && !states[current].transitions.contains(c)) {
+			while (current != -1 && !states[current].to.contains(c)) {
 				current = states[current].link;
 				length = current == -1 ? 0 : states[current].length;
 			}
 			if (current != -1) {
-				current = states[current].transitions[c];
+				current = states[current].to[c];
 				length++;
 				best = std::max(best, length);
 			}

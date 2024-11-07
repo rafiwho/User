@@ -1,26 +1,33 @@
 <snippet>
 	<content><![CDATA[
 template <typename T>
-class LazySegmentTree {
+struct Lazy {
     struct Node {
         T value;
-        int count; // Optional: can be used for counting occurrences
-        Node() : value(T()), count(0) {}
-        Node(T v, int c) : value(v), count(c) {}
+        Node() : value(T()) {}
+        Node(T v) : value(v) {}
     };
 
     vector<Node> tree;
-    vector<int> lazy;
+    vector<T> lazy;
     size_t n;
-    function<Node(const Node&, const Node&)> merge;
-    T identity; // Identity value for the merge operation
+    function<Node(Node&, Node&)> merge;
+    T identity;
 
-    void propagate(int node, int start, int end) {
+    Lazy(vector<T>& values, function<Node(Node&, Node&)> mFunc, T id)
+        : merge(mFunc), identity(id) {
+        n = values.size();
+        tree.resize(n << 2);
+        lazy.assign(n << 2, 0);
+        build(1, 0, n - 1, values);
+    }
+
+    void push(int node, int start, int end) {
         if (lazy[node] != 0) {
-            tree[node].value += lazy[node];
+            tree[node].value += lazy[node] * (end - start + 1);
             if (start != end) {
                 lazy[node << 1] += lazy[node];
-                lazy[(node << 1) + 1] += lazy[node];
+                lazy[node << 1 | 1] += lazy[node];
             }
             lazy[node] = 0;
         }
@@ -28,60 +35,49 @@ class LazySegmentTree {
 
     void build(int node, int start, int end, const vector<T>& values) {
         if (start == end) {
-            tree[node] = {values[start], 1};
+            tree[node] = Node(values[start]);
         } else {
             int mid = (start + end) >> 1;
             build(node << 1, start, mid, values);
-            build((node << 1) + 1, mid + 1, end, values);
-            tree[node] = merge(tree[node << 1], tree[(node << 1) + 1]);
+            build(node << 1 | 1, mid + 1, end, values);
+            tree[node] = merge(tree[node << 1], tree[node << 1 | 1]);
         }
     }
 
-    void update(int node, int start, int end, int l, int r, int val) {
-        propagate(node, start, end);
+    void upd(int node, int start, int end, int l, int r, T val) {
+        push(node, start, end);
         if (start > r || end < l) return;
         if (start >= l && end <= r) {
             lazy[node] += val;
-            propagate(node, start, end);
+            push(node, start, end);
             return;
         }
         int mid = (start + end) >> 1;
-        update(node << 1, start, mid, l, r, val);
-        update((node << 1) + 1, mid + 1, end, l, r, val);
-        tree[node] = merge(tree[node << 1], tree[(node << 1) + 1]);
+        upd(node << 1, start, mid, l, r, val);
+        upd(node << 1 | 1, mid + 1, end, l, r, val);
+        tree[node] = merge(tree[node << 1], tree[node << 1 | 1]);
     }
 
-    Node query(int node, int start, int end, int l, int r) {
-        propagate(node, start, end);
+    Node qry(int node, int start, int end, int l, int r) {
+        push(node, start, end);
         if (start > r || end < l) {
-            return Node(identity, 0); // Return identity node if out of bounds
+            return Node(identity);
         }
         if (start >= l && end <= r) {
             return tree[node];
         }
         int mid = (start + end) >> 1;
-        Node q1 = query(node << 1, start, mid, l, r);
-        Node q2 = query((node << 1) + 1, mid + 1, end, l, r);
+        Node q1 = qry(node << 1, start, mid, l, r);
+        Node q2 = qry(node << 1 | 1, mid + 1, end, l, r);
         return merge(q1, q2);
     }
 
-public:
-    LazySegmentTree(const vector<T>& values,
-                    function<Node(const Node&, const Node&)> mFunc,
-                    T id)
-        : merge(mFunc), identity(id) {
-        n = values.size();
-        tree.resize(4 * n);
-        lazy.assign(4 * n, 0);
-        build(1, 0, n - 1, values);
+    void rng_upd(int l, int r, T val) {
+        upd(1, 0, n - 1, l, r, val);
     }
 
-    void range_update(int l, int r, int val) {
-        update(1, 0, n - 1, l, r, val);
-    }
-
-    T range_query(int l, int r) {
-        return query(1, 0, n - 1, l, r).value;
+    T rng_qry(int l, int r) {
+        return qry(1, 0, n - 1, l, r).value;
     }
 };
 ]]></content>
