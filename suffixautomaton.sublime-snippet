@@ -1,21 +1,24 @@
 <snippet>
 	<content><![CDATA[
 
+struct State {
+	int length, link;
+	std::unordered_map<char, int> transitions;
+	int cnt; // For counting occurrences
+	long long num_substrings = -1; // Use -1 to indicate uninitialized
+};
+
 class SuffixAutomaton {
 public:
-	struct State {
-		int length, link;
-		std::map<char, int> to;
-		int cnt; // For counting occurrences
-		long long num_substrings; // Number of unique substrings from this state
-	};
 	std::vector<State> states;
 	int last;
 
 	SuffixAutomaton(const std::string &s) {
+		states.reserve(2 * s.size());
 		states.push_back({0, -1});
 		last = 0;
 		for (char c : s) add_char(c);
+		build();
 		count_substrings(0);
 	}
 
@@ -23,21 +26,21 @@ public:
 		int cur = states.size();
 		states.push_back({states[last].length + 1, 0, {}, 1});
 		int p = last;
-		while (p != -1 && !states[p].to.contains(c)) {
-			states[p].to[c] = cur;
+		while (p != -1 && states[p].transitions.find(c) == states[p].transitions.end()) {
+			states[p].transitions[c] = cur;
 			p = states[p].link;
 		}
 		if (p == -1) {
 			states[cur].link = 0;
 		} else {
-			int q = states[p].to[c];
+			int q = states[p].transitions[c];
 			if (states[p].length + 1 == states[q].length) {
 				states[cur].link = q;
 			} else {
 				int clone = states.size();
-				states.push_back({states[p].length + 1, states[q].link, states[q].to, 0});
-				while (p != -1 && states[p].to[c] == q) {
-					states[p].to[c] = clone;
+				states.push_back({states[p].length + 1, states[q].link, states[q].transitions, 0});
+				while (p != -1 && states[p].transitions[c] == q) {
+					states[p].transitions[c] = clone;
 					p = states[p].link;
 				}
 				states[q].link = states[cur].link = clone;
@@ -45,11 +48,12 @@ public:
 		}
 		last = cur;
 	}
+
 	bool contains(const std::string &substr) {
 		int current = 0;
 		for (char c : substr) {
-			if (!states[current].to.contains(c)) return false;
-			current = states[current].to[c];
+			if (states[current].transitions.find(c) == states[current].transitions.end()) return false;
+			current = states[current].transitions[c];
 		}
 		return true;
 	}
@@ -75,31 +79,34 @@ public:
 			}
 		}
 	}
+
 	// Count the number of unique substrings from a given state
 	long long count_substrings(int state) {
-		if (states[state].num_substrings != 0) return states[state].num_substrings;
+		if (states[state].num_substrings != -1) return states[state].num_substrings;
 		long long cnt = 1;
-		for (auto &[c, next_state] : states[state].to) {
+		for (auto &[c, next_state] : states[state].transitions) {
 			cnt += count_substrings(next_state);
 		}
 		return states[state].num_substrings = cnt;
 	}
+
 	// Count occurrences of a specific substring in the original string
 	// Ensure `build` is called before this function to propagate `cnt` values
 	int count_occurrences(const std::string &substr) {
 		int current = 0;
 		for (char c : substr) {
-			if (!states[current].to.count(c)) return 0;
-			current = states[current].to[c];
+			if (states[current].transitions.find(c) == states[current].transitions.end()) return 0;
+			current = states[current].transitions[c];
 		}
 		return states[current].cnt;
 	}
+
 	// Find the k-th lexicographical substring
 	std::string kth_substring(int k) {
 		int current = 0;
 		std::string result;
 		while (k > 0) {
-			for (auto &[c, next_state] : states[current].to) {
+			for (auto &[c, next_state] : states[current].transitions) {
 				int num = states[next_state].num_substrings;
 				if (k > num) {
 					k -= num;
@@ -117,18 +124,19 @@ public:
 	int longest_common_substring(const std::string &t) {
 		int current = 0, length = 0, best = 0;
 		for (char c : t) {
-			while (current != -1 && !states[current].to.contains(c)) {
+			while (current != -1 && states[current].transitions.find(c) == states[current].transitions.end()) {
 				current = states[current].link;
 				length = current == -1 ? 0 : states[current].length;
 			}
 			if (current != -1) {
-				current = states[current].to[c];
+				current = states[current].transitions[c];
 				length++;
 				best = std::max(best, length);
 			}
 		}
 		return best;
 	}
+
 	// Count the number of distinct substrings in the original string
 	long long count_distinct_substrings() {
 		long long total = 0;
@@ -138,6 +146,7 @@ public:
 		return total;
 	}
 };
+
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>automaton</tabTrigger>
