@@ -1,6 +1,6 @@
 {
-	"color_scheme": "Packages/Color Scheme - Default/Monokai.tmTheme",
-	"font_size": 12,
+	"color_scheme": "Monokai.sublime-color-scheme",
+	"font_size": 14,
 	"ignored_packages":
 	[
 		"Vintage",
@@ -12,4 +12,5 @@
 	"tab_size": 3,
 	"update_check": false,
 	"word_wrap": true,
+	"theme": "auto",
 }
