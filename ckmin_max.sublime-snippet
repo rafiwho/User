@@ -1,7 +1,7 @@
 <snippet>
 	<content><![CDATA[
-template <typename T> void setmin(T &a, T b) { a = a < b ? a : b; }
-template <typename T> void setmax(T &a, T b) { a = a > b ? a : b; }
+template <typename T> T setmin(T &a, T b) { return a = a < b ? a : b; }
+template <typename T> T setmax(T &a, T b) { return a = a > b ? a : b; }
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>ck</tabTrigger>
