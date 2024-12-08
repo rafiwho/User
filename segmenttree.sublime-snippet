@@ -4,19 +4,20 @@ template <typename T>
 struct SegmentTree {
   vector<T> t;
   int n;
-  function<T(T, T)> mrg;
-  T id;
+  T identity;
 
-  SegmentTree(int size, function<T(T, T)> mergeFunc, T identityValue)
-    : n(size), mrg(mergeFunc), id(identityValue) {
-    t.assign(4 * n, id);
+  SegmentTree(int size, T identityValue) : n(size), identity(identityValue) {
+    t.assign(n << 2, identity);
   }
 
-  SegmentTree(const vector<T>& values, function<T(T, T)> mergeFunc, T identityValue)
-    : mrg(mergeFunc), id(identityValue) {
+  SegmentTree(const vector<T>& values, T identityValue) : identity(identityValue) {
     n = values.size();
-    t.assign(4 * n, id);
+    t.assign(n << 2, identity);
     build(values, 1, 0, n - 1);
+  }
+
+  T mrge(T &a, T &b) {
+    return a + b;
   }
 
   void build(const vector<T>& values, int node, int start, int end) {
@@ -24,33 +25,32 @@ struct SegmentTree {
       t[node] = values[start];
       return;
     }
-    int mid = (start + end) >> 1;
-    int left = node << 1, right = left | 1;
-    build(values, left, start, mid);
-    build(values, right, mid + 1, end);
-    t[node] = mrg(t[left], t[right]);
+    int mid = (start + end) / 2;
+    build(values, node << 1, start, mid);
+    build(values, node << 1 | 1, mid + 1, end);
+    t[node] = mrge(t[node << 1], t[node << 1 | 1]);
   }
 
   void update(int node, int start, int end, int idx, T value) {
-    if (start > idx || end < idx) return;
-    if (start == end && start == idx) {
+    if (start == end) {
       t[node] = value;
       return;
     }
-    int mid = (start + end) >> 1;
-    int left = node << 1, right = left | 1;
-    update(left, start, mid, idx, value);
-    update(right, mid + 1, end, idx, value);
-    t[node] = mrg(t[left], t[right]);
+    int mid = (start + end) / 2;
+    if (idx <= mid)
+      update(node << 1, start, mid, idx, value);
+    else
+      update(node << 1 | 1, mid + 1, end, idx, value);
+    t[node] = mrge(t[node << 1], t[node << 1 | 1]);
   }
 
   T query(int node, int start, int end, int left, int right) {
-    if (start > right || end < left) return id;
-    if (start >= left && end <= right) return t[node];
-    int mid = (start + end) >> 1;
+    if (left > end || right < start) return identity;
+    if (left <= start && end <= right) return t[node];
+    int mid = (start + end) / 2;
     T l_query = query(node << 1, start, mid, left, right);
-    T r_query = query((node << 1) | 1, mid + 1, end, left, right);
-    return mrg(l_query, r_query);
+    T r_query = query(node << 1 | 1, mid + 1, end, left, right);
+    return mrge(l_query , r_query);
   }
 
   void update(int idx, T value) {

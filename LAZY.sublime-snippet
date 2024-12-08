@@ -1,30 +1,25 @@
 <snippet>
 	<content><![CDATA[
 template <typename T>
-struct Lazy {
-    struct Node {
-        T value;
-        Node() : value(T()) {}
-        Node(T v) : value(v) {}
-    };
+struct LP {
+    vector<T> tree, lazy;
+    int n;
 
-    vector<Node> tree;
-    vector<T> lazy;
-    size_t n;
-    function<Node(Node&, Node&)> merge;
-    T identity;
+    LP(int size) : n(size) {
+        tree.assign(n << 2, 0);
+        lazy.assign(n << 2, 0);
+    }
 
-    Lazy(vector<T>& values, function<Node(Node&, Node&)> mFunc, T id)
-        : merge(mFunc), identity(id) {
+    LP(const vector<T>& values) {
         n = values.size();
-        tree.resize(n << 2);
+        tree.assign(n << 2, 0);
         lazy.assign(n << 2, 0);
         build(1, 0, n - 1, values);
     }
 
     void push(int node, int start, int end) {
         if (lazy[node] != 0) {
-            tree[node].value += lazy[node] * (end - start + 1);
+            tree[node] += lazy[node] * (end - start + 1);
             if (start != end) {
                 lazy[node << 1] += lazy[node];
                 lazy[node << 1 | 1] += lazy[node];
@@ -33,18 +28,22 @@ struct Lazy {
         }
     }
 
+    T mrg(T &a, T &b) {
+        return a + b;
+    }
+
     void build(int node, int start, int end, const vector<T>& values) {
         if (start == end) {
-            tree[node] = Node(values[start]);
+            tree[node] = values[start];
         } else {
-            int mid = (start + end) >> 1;
+            int mid = (start + end) / 2;
             build(node << 1, start, mid, values);
             build(node << 1 | 1, mid + 1, end, values);
-            tree[node] = merge(tree[node << 1], tree[node << 1 | 1]);
+            tree[node] = mrg(tree[node << 1], tree[node << 1 | 1]);
         }
     }
 
-    void upd(int node, int start, int end, int l, int r, T val) {
+    void update(int node, int start, int end, int l, int r, T val) {
         push(node, start, end);
         if (start > r || end < l) return;
         if (start >= l && end <= r) {
@@ -52,32 +51,28 @@ struct Lazy {
             push(node, start, end);
             return;
         }
-        int mid = (start + end) >> 1;
-        upd(node << 1, start, mid, l, r, val);
-        upd(node << 1 | 1, mid + 1, end, l, r, val);
-        tree[node] = merge(tree[node << 1], tree[node << 1 | 1]);
+        int mid = (start + end) / 2;
+        update(node << 1, start, mid, l, r, val);
+        update(node << 1 | 1, mid + 1, end, l, r, val);
+        tree[node] = mrg(tree[node << 1], tree[node << 1 | 1]);
     }
 
-    Node qry(int node, int start, int end, int l, int r) {
+    T query(int node, int start, int end, int l, int r) {
         push(node, start, end);
-        if (start > r || end < l) {
-            return Node(identity);
-        }
-        if (start >= l && end <= r) {
-            return tree[node];
-        }
-        int mid = (start + end) >> 1;
-        Node q1 = qry(node << 1, start, mid, l, r);
-        Node q2 = qry(node << 1 | 1, mid + 1, end, l, r);
-        return merge(q1, q2);
+        if (start > r || end < l) return 0;
+        if (start >= l && end <= r) return tree[node];
+        int mid = (start + end) / 2;
+        T left_query = query(node << 1, start, mid, l, r);
+        T right_query = query(node << 1 | 1, mid + 1, end, l, r);
+        return mrge(left_query, right_query);
     }
 
-    void rng_upd(int l, int r, T val) {
-        upd(1, 0, n - 1, l, r, val);
+    void range_update(int l, int r, T val) {
+        update(1, 0, n - 1, l, r, val);
     }
 
-    T rng_qry(int l, int r) {
-        return qry(1, 0, n - 1, l, r).value;
+    T range_query(int l, int r) {
+        return query(1, 0, n - 1, l, r);
     }
 };
 ]]></content>
