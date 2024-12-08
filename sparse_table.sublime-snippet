@@ -1,48 +1,28 @@
 <snippet>
 	<content><![CDATA[
-template <typename T>
-class SPT {
-private:
-	vector<vector<T>> table;
-	int n;
-	function<T(T, T)> operation;
-	T identity;
+struct sparse_table {
+    vector<vector<int>> m;
 
-public:
-	SPT(const vector<T>& arr, function<T(T, T)> op, T id) {
-		n = arr.size();
-		operation = op;
-		identity = id;
+    void build(const vector<int>& a) {
+        int n = a.size();
+        int LOG = __bit_width(n);
+        m.assign(n, vector<int>(LOG));
 
-		int logn = __bit_width(n) - 1;
-		table.assign(logn + 1, vector<T>(n, identity));
+        for (int i = 0; i < n; i++) {
+            m[i][0] = a[i];
+        }
+        for (int k = 1; (1 << k) <= n; k++) {
+            for (int i = 0; i + (1 << k) - 1 < n; i++) {
+                m[i][k] = min(m[i][k - 1], m[i + (1 << (k - 1))][k - 1]);
+            }
+        }
+    }
 
-		for (int i = 0; i < n; ++i) {
-			table[0][i] = arr[i];
-		}
-
-		for (int k = 1; (1 << k) <= n; ++k) {
-			for (int i = 0; i + (1 << k) - 1 < n; ++i) {
-				table[k][i] = operation(table[k - 1][i], table[k - 1][i + (1 << (k - 1))]);
-			}
-		}
-	}
-
-	T query(int l, int r, bool f = false) {
-		if (f == false) {
-			T result = identity;
-			for (int k = __bit_width(r - l + 1) - 1; k >= 0; --k) {
-				if ((1 << k) <= r - l + 1) {
-					result = operation(result, table[k][l]);
-					l += (1 << k);
-				}
-			}
-			return result;
-		}
-		int len = r - l + 1;
-		int k = __bit_width(len) - 1;
-		return operation(table[k][l], table[k][r - (1 << k) + 1]);
-	}
+    int query(int L, int R) {
+        int length = R - L + 1;
+        int k = __bit_width(length) - 1;
+        return min(m[L][k], m[R - (1 << k) + 1][k]);
+    }
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
