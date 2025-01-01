@@ -1,79 +1,86 @@
 <snippet>
 	<content><![CDATA[
 template <typename T>
-struct LP {
-    vector<T> tree, lazy;
-    int n;
+struct LazySegmentTree {
+  struct Node {
+    T value;
+    Node() : value(T()) {}
+    Node(T v) : value(v) {}
+  };
 
-    LP(int size) : n(size) {
-        tree.assign(n << 2, 0);
-        lazy.assign(n << 2, 0);
-    }
+  vector<Node> tree;
+  vector<int> lazy;
+  size_t n;
+  function<Node(const Node&, const Node&)> merge;
+  T identity;
 
-    LP(const vector<T>& values) {
-        n = values.size();
-        tree.assign(n << 2, 0);
-        lazy.assign(n << 2, 0);
-        build(1, 0, n - 1, values);
-    }
+  LazySegmentTree(const vector<T>& values,
+                  function<Node(const Node&, const Node&)> mFunc,
+                  T id)
+    : merge(mFunc), identity(id) {
+    n = values.size();
+    tree.resize(4 * n);
+    lazy.assign(4 * n, 0);
+    build(1, 0, n - 1, values);
+  }
 
-    void push(int node, int start, int end) {
-        if (lazy[node] != 0) {
-            tree[node] += lazy[node] * (end - start + 1);
-            if (start != end) {
-                lazy[node << 1] += lazy[node];
-                lazy[node << 1 | 1] += lazy[node];
-            }
-            lazy[node] = 0;
-        }
+  void propagate(int node, int start, int end) {
+    if (lazy[node] != 0) {
+      tree[node].value += lazy[node] * (end - start + 1);
+      if (start != end) {
+        lazy[node << 1] += lazy[node];
+        lazy[(node << 1) + 1] += lazy[node];
+      }
+      lazy[node] = 0;
     }
+  }
 
-    T mrg(T &a, T &b) {
-        return a + b;
+  void build(int node, int start, int end, const vector<T>& values) {
+    if (start == end) {
+      tree[node] = {values[start]};
+    } else {
+      int mid = (start + end) >> 1;
+      build(node << 1, start, mid, values);
+      build((node << 1) + 1, mid + 1, end, values);
+      tree[node] = merge(tree[node << 1], tree[(node << 1) + 1]);
     }
+  }
 
-    void build(int node, int start, int end, const vector<T>& values) {
-        if (start == end) {
-            tree[node] = values[start];
-        } else {
-            int mid = (start + end) / 2;
-            build(node << 1, start, mid, values);
-            build(node << 1 | 1, mid + 1, end, values);
-            tree[node] = mrg(tree[node << 1], tree[node << 1 | 1]);
-        }
+  void update(int node, int start, int end, int l, int r, int val) {
+    propagate(node, start, end);
+    if (start > r || end < l) return;
+    if (start >= l && end <= r) {
+      lazy[node] += val;
+      propagate(node, start, end);
+      return;
     }
+    int mid = (start + end) >> 1;
+    update(node << 1, start, mid, l, r, val);
+    update((node << 1) + 1, mid + 1, end, l, r, val);
+    tree[node] = merge(tree[node << 1], tree[(node << 1) + 1]);
+  }
 
-    void update(int node, int start, int end, int l, int r, T val) {
-        push(node, start, end);
-        if (start > r || end < l) return;
-        if (start >= l && end <= r) {
-            lazy[node] += val;
-            push(node, start, end);
-            return;
-        }
-        int mid = (start + end) / 2;
-        update(node << 1, start, mid, l, r, val);
-        update(node << 1 | 1, mid + 1, end, l, r, val);
-        tree[node] = mrg(tree[node << 1], tree[node << 1 | 1]);
+  Node query(int node, int start, int end, int l, int r) {
+    propagate(node, start, end);
+    if (start > r || end < l) {
+      return Node(identity);
     }
+    if (start >= l && end <= r) {
+      return tree[node];
+    }
+    int mid = (start + end) >> 1;
+    Node q1 = query(node << 1, start, mid, l, r);
+    Node q2 = query((node << 1) + 1, mid + 1, end, l, r);
+    return merge(q1, q2);
+  }
 
-    T query(int node, int start, int end, int l, int r) {
-        push(node, start, end);
-        if (start > r || end < l) return 0;
-        if (start >= l && end <= r) return tree[node];
-        int mid = (start + end) / 2;
-        T left_query = query(node << 1, start, mid, l, r);
-        T right_query = query(node << 1 | 1, mid + 1, end, l, r);
-        return mrge(left_query, right_query);
-    }
+  void range_update(int l, int r, int val) {
+    update(1, 0, n - 1, l, r, val);
+  }
 
-    void range_update(int l, int r, T val) {
-        update(1, 0, n - 1, l, r, val);
-    }
-
-    T range_query(int l, int r) {
-        return query(1, 0, n - 1, l, r);
-    }
+  T range_query(int l, int r) {
+    return query(1, 0, n - 1, l, r).value;
+  }
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
