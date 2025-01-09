@@ -1,7 +1,6 @@
 <snippet>
 	<content><![CDATA[
-template <typename T>
-struct SegmentTree {
+template <typename T> struct SegmentTree {
   vector<T> t;
   int n;
   T identity;
@@ -10,17 +9,16 @@ struct SegmentTree {
     t.assign(n << 2, identity);
   }
 
-  SegmentTree(const vector<T>& values, T identityValue) : identity(identityValue) {
+  SegmentTree(const vector<T> &values, T identityValue)
+    : identity(identityValue) {
     n = values.size();
     t.assign(n << 2, identity);
     build(values, 1, 0, n - 1);
   }
 
-  T mrge(T &a, T &b) {
-    return a + b;
-  }
+  T mrge(T &a, T &b) { return a + b; }
 
-  void build(const vector<T>& values, int node, int start, int end) {
+  void build(const vector<T> &values, int node, int start, int end) {
     if (start == end) {
       t[node] = values[start];
       return;
@@ -45,21 +43,19 @@ struct SegmentTree {
   }
 
   T query(int node, int start, int end, int left, int right) {
-    if (left > end || right < start) return identity;
-    if (left <= start && end <= right) return t[node];
+    if (left > end || right < start)
+      return identity;
+    if (left <= start && end <= right)
+      return t[node];
     int mid = (start + end) / 2;
     T l_query = query(node << 1, start, mid, left, right);
     T r_query = query(node << 1 | 1, mid + 1, end, left, right);
-    return mrge(l_query , r_query);
+    return mrge(l_query, r_query);
   }
 
-  void update(int idx, T value) {
-    update(1, 0, n - 1, idx, value);
-  }
+  void update(int idx, T value) { update(1, 0, n - 1, idx, value); }
 
-  T query(int left, int right) {
-    return query(1, 0, n - 1, left, right);
-  }
+  T query(int left, int right) { return query(1, 0, n - 1, left, right); }
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
