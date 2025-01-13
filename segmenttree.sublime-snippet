@@ -14,7 +14,7 @@ struct SegTree {
     build(v, 1, 0, n - 1);
   }
 
-  T mrg(T &a, T &b) { return a + b; }
+  T mrg(T a, T b) { return a + b; }
 
   void build(const vector<T> &v, int x, int st, int en) {
     if (st == en) {
