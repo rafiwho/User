@@ -1,61 +1,57 @@
 <snippet>
 	<content><![CDATA[
-template <typename T> struct SegmentTree {
+template <typename T>
+struct SegTree {
   vector<T> t;
   int n;
-  T identity;
+  T id;
 
-  SegmentTree(int size, T identityValue) : n(size), identity(identityValue) {
-    t.assign(n << 2, identity);
+  SegTree(int sz, T idv) : n(sz), id(idv) { t.assign(n << 2, id); }
+
+  SegTree(const vector<T> &v, T idv) : id(idv) {
+    n = v.size();
+    t.assign(n << 2, id);
+    build(v, 1, 0, n - 1);
   }
 
-  SegmentTree(const vector<T> &values, T identityValue)
-    : identity(identityValue) {
-    n = values.size();
-    t.assign(n << 2, identity);
-    build(values, 1, 0, n - 1);
-  }
+  T mrg(T &a, T &b) { return a + b; }
 
-  T mrge(T &a, T &b) { return a + b; }
-
-  void build(const vector<T> &values, int node, int start, int end) {
-    if (start == end) {
-      t[node] = values[start];
+  void build(const vector<T> &v, int x, int st, int en) {
+    if (st == en) {
+      t[x] = v[st];
       return;
     }
-    int mid = (start + end) / 2;
-    build(values, node << 1, start, mid);
-    build(values, node << 1 | 1, mid + 1, end);
-    t[node] = mrge(t[node << 1], t[node << 1 | 1]);
+    int m = (st + en) / 2;
+    build(v, x << 1, st, m);
+    build(v, x << 1 | 1, m + 1, en);
+    t[x] = mrg(t[x << 1], t[x << 1 | 1]);
   }
 
-  void update(int node, int start, int end, int idx, T value) {
-    if (start == end) {
-      t[node] = value;
+  void upd(int x, int st, int en, int i, T v) {
+    if (st == en) {
+      t[x] = v;
       return;
     }
-    int mid = (start + end) / 2;
-    if (idx <= mid)
-      update(node << 1, start, mid, idx, value);
+    int m = (st + en) / 2;
+    if (i <= m)
+      upd(x << 1, st, m, i, v);
     else
-      update(node << 1 | 1, mid + 1, end, idx, value);
-    t[node] = mrge(t[node << 1], t[node << 1 | 1]);
+      upd(x << 1 | 1, m + 1, en, i, v);
+    t[x] = mrg(t[x << 1], t[x << 1 | 1]);
   }
 
-  T query(int node, int start, int end, int left, int right) {
-    if (left > end || right < start)
-      return identity;
-    if (left <= start && end <= right)
-      return t[node];
-    int mid = (start + end) / 2;
-    T l_query = query(node << 1, start, mid, left, right);
-    T r_query = query(node << 1 | 1, mid + 1, end, left, right);
-    return mrge(l_query, r_query);
+  T qry(int x, int st, int en, int l, int r) {
+    if (l > en || r < st)
+      return id;
+    if (l <= st && en <= r)
+      return t[x];
+    int m = (st + en) / 2;
+    return mrg(qry(x << 1, st, m, l, r), qry(x << 1 | 1, m + 1, en, l, r));
   }
 
-  void update(int idx, T value) { update(1, 0, n - 1, idx, value); }
+  void upd(int i, T v) { upd(1, 0, n - 1, i, v); }
 
-  T query(int left, int right) { return query(1, 0, n - 1, left, right); }
+  T qry(int l, int r) { return qry(1, 0, n - 1, l, r); }
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
