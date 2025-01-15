@@ -1,5 +1,5 @@
 {
-	"shell_cmd": "ulimit -s unlimited; ulimit -t 10; ulimit -f 2048; g++ -std=c++20 \"${file}\" -o \"${file_path}/${file_base_name}\" && ulimit -t 10; \"${file_path}/${file_base_name}\" < ~/codes/inputf.in > ~/codes/outputf.in && rm \"${file_path}/${file_base_name}\"",
+	"shell_cmd": "ulimit -s unlimited; ulimit -t 5; ulimit -f 2048; g++ -std=c++20 \"${file}\" -o \"${file_path}/${file_base_name}\" && ulimit -t 5; \"${file_path}/${file_base_name}\" < ~/codes/inputf.in > ~/codes/outputf.in && rm \"${file_path}/${file_base_name}\"",
 
 	"file_regex": "^(..[^:]*):([0-9]+):?([0-9]+)?:? (.*)$",
 
