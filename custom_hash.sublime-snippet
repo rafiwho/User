@@ -1,6 +1,6 @@
 <snippet>
 	<content><![CDATA[
-struct splitmix64_hash {
+struct cstmhsh {
 	static uint64_t splitmix64(uint64_t x) {
 		// http://xorshift.di.unimi.it/splitmix64.c
 		x += 0x9e3779b97f4a7c15;
@@ -14,7 +14,6 @@ struct splitmix64_hash {
 		return splitmix64(x + FIXED_RANDOM);
 	}
 };
-
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>custom_hash</tabTrigger>
