@@ -7,7 +7,7 @@ void sieve() {
     arr.set();
     arr[0] = arr[1] = false;
     stored_prime.emplace_back(2);
-    for (int i = 3; i * i <= N; i += 2) {
+    for (int i = 3; i * i < N; i += 2) {
         if (arr[i]) {
             for (int j = i * i; j < N; j += i + i)
                 arr[j]  = false;
