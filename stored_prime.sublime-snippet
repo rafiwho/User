@@ -1,23 +1,25 @@
 <snippet>
   <content><![CDATA[
 constexpr int N = int(1E7);
-bitset<N>arr;
-vector<int>stored_prime;
-void sieve() {
-    arr.set();
-    arr[0] = arr[1] = false;
-    stored_prime.emplace_back(2);
-    for (int i = 3; i * i < N; i += 2) {
-        if (arr[i]) {
-            for (int j = i * i; j < N; j += i + i)
-                arr[j]  = false;
-        }
+bitset < N + 1 > isPrime;
+vector<int> prime = {2};
+void seive() {
+  isPrime.set(2);
+  for (int i = 3; i <= N; i += 2) {
+    isPrime.set(i);
+  }
+  for (int i = 3; i * i <= N; i += 2) {
+    if (isPrime[i]) {
+      for (int j = i * i; j <= N; j += (i << 1)) {
+        isPrime.reset(j);
+      }
     }
-    for (int i = 3; i < N; i += 2) {
-        if (arr[i]) {
-            stored_prime.emplace_back(i);
-        }
+  }
+  for (int i = 3; i <= N; i += 2) {
+    if (isPrime[i]) {
+      prime.push_back(i);
     }
+  }
 }
 ]]></content>
   <tabTrigger>stored_prime</tabTrigger>

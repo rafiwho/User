@@ -2,15 +2,16 @@
   <content><![CDATA[
 constexpr int mod = 1E9 + 7;
 int p(int a, int b) {
-    int ans = 1 % mod;
-    while (b) {
-        if (b & 1) {
-            ans = 1LL * ans * a % mod;
-        }
-        a = 1LL * a * a % mod;
-        b >>= 1;
+  b = b == -1 ? mod - 2 : b;
+  int ans = 1 % mod;
+  while (b) {
+    if (b & 1) {
+      ans = 1LL * ans * a % mod;
     }
-    return ans;
+    a = 1LL * a * a % mod;
+    b >>= 1;
+  }
+  return ans;
 }
 ]]></content>
   <tabTrigger>binary_expo</tabTrigger>
