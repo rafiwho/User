@@ -1,19 +1,17 @@
 <snippet>
 	<content><![CDATA[
-std::vector<int> nextGreaterElements(const std::vector<int>& nums) {
-    int n = nums.size();
-    std::vector<int> result(n, -1);
-    std::stack<int> s;
-
-    for (int i = 0; i < n; ++i) {
-        while (!s.empty() && nums[s.top()] < nums[i]) {
-            result[s.top()] = nums[i];
-            s.pop();
-        }
-        s.push(i);
+vector<int> nge(const vector<int>&a) {
+  int n = a.size();
+  stack<int>st;
+  vector<int>nge(n, -1);
+  for (int i = n - 1; i >= 0; --i) {
+    while (!st.empty() && st.top() <= a[i]) {
+      st.pop();
     }
-
-    return result;
+    nge[i] = st.empty() ? -1 : st.top();
+    st.push(a[i]);
+  }
+  return nge;
 }
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->

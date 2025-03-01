@@ -1,6 +1,6 @@
 {
 	"color_scheme": "Monokai.sublime-color-scheme",
-	"font_size": 11,
+	/*"font_size": 10,*/
 	"ignored_packages":
 	[
 		"Vintage",
@@ -13,4 +13,6 @@
 	"update_check": false,
 	"word_wrap": true,
 	"theme": "auto",
+	"font_face": "DejaVu Sans Mono",
+	"font_size": 10,
 }

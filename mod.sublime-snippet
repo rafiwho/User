@@ -1,6 +1,15 @@
 <snippet>
 	<content><![CDATA[
 constexpr int mod = 1E9 + 7;
+void add(int &a, int b) {
+	a = (a + b) % mod;
+}
+void sub(int &a, int b) {
+	a = (a - b + mod) % mod;
+}
+void mul(int &a, int b) {
+	a = (1LL * a * b) % mod;
+}
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
 	<tabTrigger>MOD</tabTrigger>

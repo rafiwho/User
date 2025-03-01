@@ -2,58 +2,27 @@
 	<content><![CDATA[
 using dist_t = long double;
 
-struct point {
-    int64_t x, y;
+struct P {
+    int64_t x = 0, y = 0;
 
-    point(): x(0), y(0) {}
+    P(int64_t _x = 0, int64_t _y = 0) : x(_x), y(_y) {}
 
-    point(int64_t _x, int64_t _y): x(_x), y(_y) {}
+    P& operator += (const P &other) { x += other.x; y += other.y; return *this; }
+    P& operator -= (const P &other) { x -= other.x; y -= other.y; return *this; }
 
-    point & operator += (const point & other) {
-        x += other.x;
-        y += other.y;
-        return * this;
-    }
-    point & operator -= (const point & other) {
-        x -= other.x;
-        y -= other.y;
-        return * this;
-    }
-    point & operator *= (int64_t mult) {
-        x *= mult;
-        y *= mult;
-        return * this;
-    }
-    point operator + (const point & other) const {
-        return point( * this) += other;
-    }
-    point operator - (const point & other) const {
-        return point( * this) -= other;
-    }
-    point operator * (int64_t mult) const {
-        return point( * this) *= mult;
-    }
-    bool operator == (const point & other) const {
-        return x == other.x && y == other.y;
-    }
-    bool operator != (const point & other) const {
-        return !( * this == other);
-    }
-    point operator - () const {
-        return point(-x, -y);
-    }
-    point rotate90() const {
-        return point(-y, x);
-    }
-    dist_t dist(point b) const {
-        return hypotl(x - b.x, y - b.y);
-    }
-    friend ostream & operator << (ostream & os, const point & p) {
-        return os << p.x << " " << p.y;
-    }
-    friend istream & operator >> (istream & is, point & p) {
-        return is >> p.x >> p.y;
-    }
+    P operator + (const P &other) const { return P(*this) += other; }
+    P operator - (const P &other) const { return P(*this) -= other; }
+    P operator * (int64_t mult) const { return {x * mult, y * mult}; }
+    P operator - () const { return { -x, -y}; }
+    bool operator == (const P &other) const { return x == other.x && y == other.y; }
+    bool operator != (const P &other) const { return !(*this == other); }
+
+    P rotate90() const { return { -y, x}; }
+    dist_t dist(const P &b) const { return hypotl(x - b.x, y - b.y); }
+    int64_t cross(const P &b) const { return x * b.y - y * b.x; }
+
+    friend ostream &operator << (ostream &os, const P &p) { return os << p.x << " " << p.y; }
+    friend istream &operator >> (istream &is, P &p) { return is >> p.x >> p.y; }
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
