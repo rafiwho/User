@@ -2,27 +2,29 @@
 	<content><![CDATA[
 using dist_t = long double;
 
-struct P {
+struct Point {
     int64_t x = 0, y = 0;
 
-    P(int64_t _x = 0, int64_t _y = 0) : x(_x), y(_y) {}
+    Point(int64_t _x = 0, int64_t _y = 0) : x(_x), y(_y) {}
 
-    P& operator += (const P &other) { x += other.x; y += other.y; return *this; }
-    P& operator -= (const P &other) { x -= other.x; y -= other.y; return *this; }
+    Point& operator += (const Point& other) { x += other.x; y += other.y; return *this; }
+    Point& operator -= (const Point& other) { x -= other.x; y -= other.y; return *this; }
 
-    P operator + (const P &other) const { return P(*this) += other; }
-    P operator - (const P &other) const { return P(*this) -= other; }
-    P operator * (int64_t mult) const { return {x * mult, y * mult}; }
-    P operator - () const { return { -x, -y}; }
-    bool operator == (const P &other) const { return x == other.x && y == other.y; }
-    bool operator != (const P &other) const { return !(*this == other); }
+    Point operator + (const Point& other) const { return Point(*this) += other; }
+    Point operator - (const Point& other) const { return Point(*this) -= other; }
+    Point operator * (int64_t mult) const { return {x * mult, y * mult}; }
+    Point operator - () const { return { -x, -y}; }
+    bool operator == (const Point& other) const { return x == other.x && y == other.y; }
+    bool operator != (const Point& other) const { return !(*this == other); }
+    bool operator <(const Point& b)const { return make_pair(x, y) < make_pair(b.x, b.y); }
 
-    P rotate90() const { return { -y, x}; }
-    dist_t dist(const P &b) const { return hypotl(x - b.x, y - b.y); }
-    int64_t cross(const P &b) const { return x * b.y - y * b.x; }
+    Point rotate90() const { return { -y, x}; }
+    dist_t dist(const Point& b) const { return hypotl(x - b.x, y - b.y); }
+    int64_t cross(const Point& b) const { return x * b.y - y * b.x; }
+    int64_t triangle(const Point& a, const Point& b) const { return (a - *this).cross(b - *this); }
 
-    friend ostream &operator << (ostream &os, const P &p) { return os << p.x << " " << p.y; }
-    friend istream &operator >> (istream &is, P &p) { return is >> p.x >> p.y; }
+    friend ostream &operator << (ostream& os, const Point& p) { return os << p.x << " " << p.y; }
+    friend istream &operator >> (istream& is, Point& p) { return is >> p.x >> p.y; }
 };
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
