@@ -2,13 +2,15 @@
 	<content><![CDATA[
 constexpr int mod = 1E9 + 7;
 void add(int &a, int b) {
-	a = (a + b) % mod;
+  a += b;
+  if (a >= mod) a -= mod;
 }
 void sub(int &a, int b) {
-	a = (a - b + mod) % mod;
+  a -= b;
+  if (a < 0) a += mod;
 }
 int mul(int a, int b) {
-	return (int64_t(a) * b) % mod;
+  return (int64_t(a) * b) % mod;
 }
 ]]></content>
 	<!-- Optional: Set a tabTrigger to define how to trigger the snippet -->
